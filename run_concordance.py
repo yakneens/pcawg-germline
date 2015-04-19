@@ -9,8 +9,8 @@ results_dir = rootdir + '/results/'
 header_file_name = "header.txt"
 snp6_vcf_dir = '/icgc/pcawg/analysis/waszak/tcga_snp6/vcf_files/'
 snp6_vcf_suffix = '.affy-snp6.cqc_0.4.qcr_0.86.birdseed-dev_2.6.cr_0.95.chr1_22.bi.snv.polymorphic.vcf.gz'
-rtg_vcf_dir = "/icgc/pcawg/project/results/germline_variants/annai/tcga/"
-#rtg_vcf_dir = "/icgc/pcawg/analysis/iakhnin/test/"
+#rtg_vcf_dir = "/icgc/pcawg/project/results/germline_variants/annai/tcga/"
+rtg_vcf_dir = "/icgc/pcawg/analysis/iakhnin/test/"
 snp6_to_rtg_mapping_file = "/icgc/pcawg/analysis/iakhnin/PCAWG_SNP6_uuid_to_annai_vcf_uuid.txt"
 header_size = 122
 
@@ -108,7 +108,7 @@ def generate_pbs():
     result_list = find_sample_files('*.vcf.gz', rtg_vcf_dir)
     snp6_to_rtg, rtg_to_snp6 = get_snp6_to_rtg_mappings(snp6_to_rtg_mapping_file)
         for rtg_file_uuid in result_list.keys():
-             if rtg_to_snp6.has_key(rtg_file_uuid):              
+            if rtg_to_snp6.has_key(rtg_file_uuid):              
                 sample_file = result_list[rtg_file_uuid]
                 
                 p = open("/icgc/pcawg/analysis/iakhnin/germline_genotype_concordance/submit_concordance.pbs", "w")
@@ -122,10 +122,10 @@ def generate_pbs():
                 p.write("#PBS -m e\n")
                 p.write("sample_uuid = $(python /icgc/pcawg/analysis/iakhnin/pcawg-germline/process_header.py " + sample_file + " " + rtg_file_uuid + ")\n")
                 header_file_path = raw_dir + rtg_file_uuid + "/" + header_file_name 
-               
+                
                 snp6_uuid = rtg_to_snp6[rtg_file_uuid]
                 results_file_name = raw_dir + get_results_file_name(snp6_uuid, rtg_uuid) 
-    
+                
                 snp6_file_path = snp6_vcf_dir + snp6_uuid + snp6_vcf_suffix
                 p.write("/icgc/pcawg/analysis/iakhnin/bcftools-1.2/bcftools reheader -h " + header_file_path + " -o " + raw_dir + rtg_file_uuid + "/$sample_uuid.vcf.gz " + sample_file + "\n")
                 p.write("tabix -f -p vcf " + raw_dir + rtg_file_uuid + "/$sample_uuid.vcf.gz\n")
