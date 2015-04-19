@@ -102,6 +102,38 @@ def snp6_to_rtg_concordance_test():
             clean_up(results_file_name)
         else:
             print "No corresponding SNP6 sample found for RTG sample " + rtg_file_uuid + ", skipping"
-snp6_to_rtg_concordance_test()    
+#snp6_to_rtg_concordance_test()
+
+def generate_pbs():
+    result_list = find_sample_files('*.vcf.gz', rtg_vcf_dir)
+    snp6_to_rtg, rtg_to_snp6 = get_snp6_to_rtg_mappings(snp6_to_rtg_mapping_file)
+        for rtg_file_uuid in result_list.keys():
+             if rtg_to_snp6.has_key(rtg_file_uuid):              
+                sample_file = result_list[rtg_file_uuid]
+                
+                p = open("/icgc/pcawg/analysis/iakhnin/germline_genotype_concordance/submit_concordance.pbs", "w")
+                p.write("#!/bin/bash\n")
+                p.write("#PBS -o " + raw_dir + rtg_file_uuid + "/pbs.out\n")
+                p.write("#PBS -e " + raw_dir + rtg_file_uuid + "/pbs.err\n")
+                p.write("#PBS -l nodes=1:ppn=8,mem=8gb\n")
+                p.write("#PBS -l walltime=00::15:00\n")
+                p.write("#PBS -N siakhnin_pcawg_snp6\n")
+                p.write("#PBS -M iakhnin@embl.de\n")
+                p.write("#PBS -m e\n")
+                p.write("sample_uuid = $(python /icgc/pcawg/analysis/iakhnin/pcawg-germline/process_header.py " + sample_file + " " + rtg_file_uuid + ")\n")
+                header_file_path = raw_dir + rtg_file_uuid + "/" + header_file_name 
+               
+                snp6_uuid = rtg_to_snp6[rtg_file_uuid]
+                results_file_name = raw_dir + get_results_file_name(snp6_uuid, rtg_uuid) 
     
+                snp6_file_path = snp6_vcf_dir + snp6_uuid + snp6_vcf_suffix
+                p.write("/icgc/pcawg/analysis/iakhnin/bcftools-1.2/bcftools reheader -h " + header_file_path + " -o " + raw_dir + rtg_file_uuid + "/$sample_uuid.vcf.gz " + sample_file + "\n")
+                p.write("tabix -f -p vcf " + raw_dir + rtg_file_uuid + "/$sample_uuid.vcf.gz\n")
+                p.write("vcf-compare -a -g -m " + snp6_uuid + ":$sample_uuid " + snp6_file_path + " " + raw_dir + rtg_file_uuid + "/$sample_uuid.vcf.gz > " + raw_dir + rtg_file_uuid  + "/" + results_file_name + "\n")
+                p.write("mv " + raw_dir + rtg_file_uuid + "/*.vcf.gz* " + processed_dir + "\n")
+                p.write("mv " + raw_dir + rtg_file_uuid + "/" + results_file_name + " " + results_dir + "\n")
+                p.write("rm -rf" + raw_dir + rtg_file_uuid + "\n")
+                
+                call("qsub /icgc/pcawg/analysis/iakhnin/germline_genotype_concordance/submit_concordance.pbs", shell=True)         
     
+ generate_pbs()   
