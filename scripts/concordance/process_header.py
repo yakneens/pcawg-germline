@@ -1,5 +1,5 @@
 import gzip, re, os
-
+import sys
 rootdir = '/icgc/pcawg/analysis/iakhnin/germline_genotype_concordance'
 raw_dir = rootdir + '/raw/'
 processed_dir = rootdir + '/processed/'

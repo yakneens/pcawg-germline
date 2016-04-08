@@ -60,7 +60,7 @@ def generate_pbs():
             header_file_path = raw_dir + rtg_file_uuid + "/" + header_file_name 
             
             snp6_uuid = rtg_to_snp6[rtg_file_uuid]
-            results_file_name = raw_dir + get_results_file_name(snp6_uuid, rtg_uuid) 
+            results_file_name = raw_dir + get_results_file_name(snp6_uuid, rtg_file_uuid) 
             
             snp6_file_path = snp6_vcf_dir + snp6_uuid + snp6_vcf_suffix
             p.write("/icgc/pcawg/analysis/iakhnin/bcftools-1.2/bcftools reheader -h " + header_file_path + " -o " + raw_dir + rtg_file_uuid + "/$sample_uuid.vcf.gz " + sample_file + "\n")
@@ -72,4 +72,4 @@ def generate_pbs():
             
             #call("qsub /icgc/pcawg/analysis/iakhnin/germline_genotype_concordance/submit_concordance.pbs", shell=True)         
     
- generate_pbs()   
+generate_pbs()   
