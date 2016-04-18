@@ -1,4 +1,4 @@
-pcawg:
+base:
   'G@roles:germline':
     - biotools.freebayes
     - biotools.htslib
