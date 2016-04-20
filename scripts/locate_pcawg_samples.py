@@ -3,16 +3,19 @@ from sqlalchemy.orm import Session
 from sqlalchemy import create_engine
 import os.path
 import datetime
-from tracker.util import connection
 
 base_path = "/gnosdata/data/"
 base_path_tcga = "/gnosdata/tcga/"
 
+Base = automap_base()        
+engine = create_engine('postgresql://pcawg_admin:pcawg@postgresql.service.consul:5432/pcawg_sample_tracking')        
+Base.prepare(engine, reflect=True)        
+            
+PCAWGSample = Base.classes.pcawg_samples
+SampleLocation = Base.classes.sample_locations
+            
+session = Session(engine)
 
-PCAWGSample = connection.Base.classes.pcawg_samples
-SampleLocation = connection.Base.classes.sample_locations
-
-session = connection.Session()
 
 # Create a dict mapping donor_index to sample_location
 sample_locations = {el.donor_index: el for el in session.query(SampleLocation)}
@@ -75,3 +78,4 @@ for sample in session.query(PCAWGSample):
         session.commit()
 
 session.close()
+engine.dispose()

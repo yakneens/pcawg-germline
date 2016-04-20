@@ -33,13 +33,22 @@ def parse_args():
 
 def get_available_samples(analysis_id, tissue_type, num_runs):
     
-    PCAWGSample = connection.Base.classes.pcawg_samples
-    SampleLocation = connection.Base.classes.sample_locations
+    #PCAWG Samples are in their own database
+    Base = automap_base()        
+    sample_engine = create_engine('postgresql://pcawg_admin:pcawg@postgresql.service.consul:5432/pcawg_sample_tracking')        
+    Base.prepare(sample_engine, reflect=True)        
+                
+    PCAWGSample = Base.classes.pcawg_samples
+    SampleLocation = Base.classes.sample_locations
+                
+    sample_session = Session(sample_engine)
+    
+    #Butler run tracking is in its own database
     Analysis = connection.Base.classes.analysis
     AnalysisRun = connection.Base.classes.analysis_run
     Configuration = connection.Base.classes.configuration
     
-    session = connection.Session()
+    run_session = connection.Session()
     
     if tissue_type == "normal":
         sample_id = PCAWGSample.normal_wgs_alignment_gnos_id
@@ -48,18 +57,23 @@ def get_available_samples(analysis_id, tissue_type, num_runs):
         sample_id = PCAWGSample.tumor_wgs_alignment_gnos_id
         sample_location = SampleLocation.tumor_sample_location
     
-    current_runs = session.query(Configuration.config[("sample"," sample_id")].astext).\
+    current_runs = run_session.query(Configuration.config[("sample"," sample_id")].astext).\
         join(AnalysisRun, AnalysisRun.config_id == Configuration.config_id).\
         join(Analysis, Analysis.analysis_id == AnalysisRun.analysis_id).\
         filter(and_(Analysis.analysis_id == analysis_id, AnalysisRun.run_status != 4))
         
-    available_samples = session.query(PCAWGSample.index.label("index"), sample_id.label("sample_id"), sample_location.label("sample_location")).\
+    available_samples = sample_session.query(PCAWGSample.index.label("index"), sample_id.label("sample_id"), sample_location.label("sample_location")).\
         join(SampleLocation, PCAWGSample.index == SampleLocation.donor_index).\
         filter(and_(sample_location != None, sample_id.notin_(current_runs))).\
         limit(num_runs)
         
-    session.close()
+    run_session.close()
     connection.engine.dispose()
+    
+    sample_session.close()
+    sample_engine.dispose()
+    
+    
     
     return available_samples, int(available_samples.count())
 
