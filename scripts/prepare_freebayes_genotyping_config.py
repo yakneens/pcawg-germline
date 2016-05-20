@@ -60,12 +60,12 @@ def get_available_samples(analysis_id, tissue_type, num_runs):
     current_runs = run_session.query(Configuration.config[("sample"," sample_id")].astext).\
         join(AnalysisRun, AnalysisRun.config_id == Configuration.config_id).\
         join(Analysis, Analysis.analysis_id == AnalysisRun.analysis_id).\
-        filter(and_(Analysis.analysis_id == analysis_id, AnalysisRun.run_status != 4))
+        filter(and_(Analysis.analysis_id == analysis_id, AnalysisRun.run_status != 4)).all()
         
     available_samples = sample_session.query(PCAWGSample.index.label("index"), sample_id.label("sample_id"), sample_location.label("sample_location")).\
         join(SampleLocation, PCAWGSample.index == SampleLocation.donor_index).\
         filter(and_(sample_location != None, sample_id.notin_(current_runs))).\
-        limit(num_runs)
+        limit(num_runs).all()
         
     run_session.close()
     connection.engine.dispose()
@@ -75,7 +75,7 @@ def get_available_samples(analysis_id, tissue_type, num_runs):
     
     
     
-    return available_samples, int(available_samples.count())
+    return available_samples, len(available_samples)
 
 def write_config_to_file(config, config_location):
     

@@ -1,0 +1,34 @@
+{
+	"variants_location": {
+		"1": "/shared/data/samples/vcf/freebayes_discovery_merged/pcawg2833.discovery.freebayes.chr_1.sites.snv_indel.annot.final.vcf.gz",
+	    "2": "/shared/data/samples/vcf/freebayes_discovery_merged/pcawg2833.discovery.freebayes.chr_2.sites.snv_indel.annot.final.vcf.gz",
+	    "3": "/shared/data/samples/vcf/freebayes_discovery_merged/pcawg2833.discovery.freebayes.chr_3.sites.snv_indel.annot.final.vcf.gz",
+	    "4": "/shared/data/samples/vcf/freebayes_discovery_merged/pcawg2833.discovery.freebayes.chr_4.sites.snv_indel.annot.final.vcf.gz",
+	    "5": "/shared/data/samples/vcf/freebayes_discovery_merged/pcawg2833.discovery.freebayes.chr_5.sites.snv_indel.annot.final.vcf.gz",
+	    "6": "/shared/data/samples/vcf/freebayes_discovery_merged/pcawg2833.discovery.freebayes.chr_6.sites.snv_indel.annot.final.vcf.gz",
+	    "7": "/shared/data/samples/vcf/freebayes_discovery_merged/pcawg2833.discovery.freebayes.chr_7.sites.snv_indel.annot.final.vcf.gz",
+	    "8": "/shared/data/samples/vcf/freebayes_discovery_merged/pcawg2833.discovery.freebayes.chr_8.sites.snv_indel.annot.final.vcf.gz",
+	    "9": "/shared/data/samples/vcf/freebayes_discovery_merged/pcawg2833.discovery.freebayes.chr_8.sites.snv_indel.annot.final.vcf.gz",
+	    "10": "/shared/data/samples/vcf/freebayes_discovery_merged/pcawg2833.discovery.freebayes.chr_10.sites.snv_indel.annot.final.vcf.gz",
+	    "11": "/shared/data/samples/vcf/freebayes_discovery_merged/pcawg2833.discovery.freebayes.chr_11.sites.snv_indel.annot.final.vcf.gz",
+	    "12": "/shared/data/samples/vcf/freebayes_discovery_merged/pcawg2833.discovery.freebayes.chr_12.sites.snv_indel.annot.final.vcf.gz",
+	    "13": "/shared/data/samples/vcf/freebayes_discovery_merged/pcawg2833.discovery.freebayes.chr_13.sites.snv_indel.annot.final.vcf.gz",
+	    "14": "/shared/data/samples/vcf/freebayes_discovery_merged/pcawg2833.discovery.freebayes.chr_14.sites.snv_indel.annot.final.vcf.gz",
+	    "15": "/shared/data/samples/vcf/freebayes_discovery_merged/pcawg2833.discovery.freebayes.chr_15.sites.snv_indel.annot.final.vcf.gz",
+	    "16": "/shared/data/samples/vcf/freebayes_discovery_merged/pcawg2833.discovery.freebayes.chr_16.sites.snv_indel.annot.final.vcf.gz",
+	    "17": "/shared/data/samples/vcf/freebayes_discovery_merged/pcawg2833.discovery.freebayes.chr_17.sites.snv_indel.annot.final.vcf.gz",
+	    "18": "/shared/data/samples/vcf/freebayes_discovery_merged/pcawg2833.discovery.freebayes.chr_18.sites.snv_indel.annot.final.vcf.gz",
+	    "19": "/shared/data/samples/vcf/freebayes_discovery_merged/pcawg2833.discovery.freebayes.chr_19.sites.snv_indel.annot.final.vcf.gz",
+	    "20": "/shared/data/samples/vcf/freebayes_discovery_merged/pcawg2833.discovery.freebayes.chr_20.sites.snv_indel.annot.final.vcf.gz",
+	    "21": "/shared/data/samples/vcf/freebayes_discovery_merged/pcawg2833.discovery.freebayes.chr_21.sites.snv_indel.annot.final.vcf.gz",
+	    "22": "/shared/data/samples/vcf/freebayes_discovery_merged/pcawg2833.discovery.freebayes.chr_22.sites.snv_indel.annot.final.vcf.gz",
+	    "X": "/shared/data/samples/vcf/freebayes_discovery_merged/pcawg2833.discovery.freebayes.chr_X.sites.snv_indel.annot.final.vcf.gz",
+	    "Y": "/shared/data/samples/vcf/freebayes_discovery_merged/pcawg2833.discovery.freebayes.chr_Y.sites.snv_indel.annot.final.vcf.gz"
+	},
+	"results_base_path": "/shared/data/results/regenotype_freebayes_discovery/",
+	"results_local_path": "/tmp/regenotype_freebayes_discovery/",
+	"freebayes": {
+		"mode": "regenotyping",
+		"flags": "-l"
+	}
+}
