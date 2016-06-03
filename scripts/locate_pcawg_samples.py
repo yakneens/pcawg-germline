@@ -23,9 +23,11 @@ sample_locations = {el.donor_index: el for el in session.query(SampleLocation)}
 for sample in session.query(PCAWGSample):
     print "Processing Donor #: " + str(sample.index) + " Id: " + sample.submitter_donor_id
 
+
+    
     # File location of the tumor BAM file
-    tumor_directory = sample.tumor_wgs_alignment_gnos_id
-    tumor_filename = sample.tumor_wgs_alignment_bam_file_name
+    tumor_directory = sample.tumor_wgs_alignment_gnos_id.split(',')[0]
+    tumor_filename = sample.tumor_wgs_alignment_bam_file_name.split(',')[0]
     tumor_full_path = base_path + tumor_directory + "/" + tumor_filename
     tumor_full_path_tcga = base_path_tcga + \
         tumor_directory + "/" + tumor_filename
