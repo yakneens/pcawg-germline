@@ -1,0 +1,12 @@
+Package: pcawg.common
+Title: PCAWG Common
+Version: 0.0.0.9000
+Authors@R: person("Sergei", "Iakhnin", email = "llevar@gmail.com", role = c("aut", "cre"))
+Description: Common functions for handling PCAWG datasets.
+Depends: R (>= 3.3.0)
+License: MIT
+Encoding: UTF-8
+LazyData: true
+Imports:
+  VariantAnnotation,
+  splitstackshape
