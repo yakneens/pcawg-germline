@@ -2,10 +2,40 @@ library(VariantAnnotation)
 library(data.table)
 library(pcawg.common)
 
+#Read in metadata
 sample_meta = get_pcawg_metadata("~/Downloads/pcawg_data/sample_metadata/pcawg_summary.tsv")
 
+#Load germline deletions data
 load("~/Downloads/pcawg_data/germline_deletions/dels.Rdata")
+
+#Load somatic SNV data
 load("~/Downloads/pcawg_data/snv_samples.Rdata")
+
+#Compute matrix with 1 for heterozygous carriers of a deletion, 0 for non-carriers (hom ref), and NA for others
+deletion_carrier_mask = get_het_carrier_mask(geno(germline_deletions)$GT)
+
+#Number of het carriers per deletion
+carrier_counts = rowSums(deletion_carrier_mask, na.rm = T)
+
+#Compute a matrix with count of SNVs overlying each deletion
+snv_hits = do.call(rbind, lapply(snv_samples, function(x) as.table(findOverlaps(rowRanges(germline_deletions), rowRanges(x)))))
+
+colnames(snv_hits) = rownames(germline_deletions)
+
+
+# Normalize each sample by number of SNVs in that sample
+# Normalize each deletion by deletion width
+normalize_snv_counts <- function(snv_hits){
+  del_widths =  width(ranges(rowRanges(germline_deletions)))
+  snv_counts = unlist(lapply(snv_samples, length))
+  
+  return(snv_hits / snv_counts / del_widths[col(snv_hits)])
+  
+}
+
+normalized_snv_hits = normalize_snv_counts(snv_hits)
+
+
 
 
 
@@ -21,14 +51,6 @@ sub_meta$tumor_wgs_aliquot_id = sapply(sub_meta$tumor_wgs_aliquot_id, function(x
 # Rename columns to donors in deletions data frame
 colnames(dels) = sapply(colnames(dels), function(x) sub_meta[sub_meta$normal_wgs_aliquot_id == x, "donor_unique_id"])
 
-#If genotype of element is in genotypes_list record it as 1, otherwise record it as 0
-genotypeMask <- function(element, genotypes_list){
-  if(element %in% genotypes_list){
-    return(1)
-  } else {
-    return(0)
-  }
-}
 
 #Data frame of heterozygous deletion carriers 
 het_carriers = as.data.frame(t(apply(geno(dels)$GT, MARGIN=c(1,2), FUN=genotypeMask, genotypes_list=c("0/1", "1/0"))))

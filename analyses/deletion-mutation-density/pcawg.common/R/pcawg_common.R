@@ -37,7 +37,7 @@ save_snv_samples <- function(snv_samples, file_location){
 
 #When deletions are imported they don't seem to have a proper end recorded
 set_deletion_range_ends <- function(dels){
-  end(ranges(rowRanges(dels))) = info(dels)$END
+  eval.parent(substitute(end(ranges(rowRanges(dels))) <- info(dels)$END))
 }
 
 #Read in germline deletions
@@ -56,5 +56,31 @@ read_germline_deletions_from_vcf <- function(file_location, range){
 #Save deletions in R format to a specified location
 save_deletions_to_r_file <- function(deletions, file_location){
   save(deletions, file=file_location)
+}
+
+#If genotype of element is in genotypes_list record it as 1, otherwise record it as 0
+genotype_mask <- function(element, genotypes_list){
+  if(element %in% genotypes_list){
+    return(1)
+  } else {
+    return(0)
+  }
+}
+
+#If variant genotype is "0/1" or "1/0" mark it 1
+#If variant genotype is "0/0" mark it 0
+#Otherwise mark NA
+mark_carriers_and_non_carriers <- function(element){
+  if(element == "0/1" || element == "1/0"){
+    return(1)
+  } else if (element == "0/0") {
+    return(0)
+  } else {
+    return(NA)
+  }
+}
+
+get_het_carrier_mask <- function(my_data){
+  return(as.data.frame(apply(my_data, MARGIN=c(1,2), FUN=mark_carriers_and_non_carriers)))
 }
 
