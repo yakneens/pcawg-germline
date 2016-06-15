@@ -52,10 +52,10 @@ for root, dirs, files in os.walk(results_path):
     
     missing_contigs = []
     this_sample_id = os.path.basename(root)
-    for my_file in files:
-        for my_contig in contig_names:
-            if not os.path.isfile(root + my_file):
-                missing_contigs.append(my_contig)
+    
+    for my_contig in contig_names:
+        if not os.path.isfile(root + this_sample_id + "_" + my_contig + "vcf.gz"):
+            missing_contigs.append(my_contig)
     
 
     if len(missing_contigs) > 0:
