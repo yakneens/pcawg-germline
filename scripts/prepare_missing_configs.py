@@ -54,7 +54,7 @@ for root, dirs, files in os.walk(results_path):
     this_sample_id = os.path.basename(root)
     
     for my_contig in contig_names:
-        if not os.path.isfile(root + this_sample_id + "_" + my_contig + "vcf.gz"):
+        if not os.path.isfile(root + "/" + this_sample_id + "_" + my_contig + ".vcf.gz"):
             missing_contigs.append(my_contig)
     
 
@@ -68,8 +68,8 @@ for root, dirs, files in os.walk(results_path):
                                     "donor_index": current_sample.index,
                                     "sample_id": current_sample.sample_id,
                                     "sample_location": current_sample.sample_location,
-                                    "contig_names": missing_contigs
-                                }
+                                },
+                            "contig_whitelist": missing_contigs
                             }
             
         write_config_to_file(this_config_data, config_location)
