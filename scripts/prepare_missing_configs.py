@@ -66,7 +66,7 @@ for root, dirs, files in os.walk(results_path):
         
         this_config_data = {"sample": {
                                     "donor_index": current_sample.index,
-                                    "sample_id": current_sample.sample_id,
+                                    "sample_id": str.split(current_sample.sample_id, ",")[0],
                                     "sample_location": current_sample.sample_location,
                                 },
                             "contig_whitelist": missing_contigs
