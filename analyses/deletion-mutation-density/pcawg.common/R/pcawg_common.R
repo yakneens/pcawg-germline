@@ -4,7 +4,7 @@ library(splitstackshape)
 
 #Read in sample metadata
 get_pcawg_metadata <- function(file_location, split_multi_tumors = T){
-  sample_meta = read.table(file_location, header=TRUE, sep="\t")
+  sample_meta = read.table(file_location, header=TRUE, sep="\t", stringsAsFactors = F)
   
   if(split_multi_tumors){
     library(splitstackshape)
@@ -16,8 +16,13 @@ get_pcawg_metadata <- function(file_location, split_multi_tumors = T){
   return(sample_meta)
 }
 
+keep_first_of_multi_tumors <- function(sample_metadata){
+  sample_metadata$tumor_wgs_aliquot_id = unlist(lapply(strsplit(sample_metadata$tumor_wgs_aliquot_id, ","), function(x) x[1]))
+  return(sample_metadata)
+}
+
 #Read SNV samples from a specified directory
-read_snv_samples_from_vcf <- function(sample_location_directory, sample_meta){
+read_snv_samples_from_vcf <- function(sample_location_directory, sample_meta, range){
   
   files = list.files(sample_location_directory, pattern="*.vcf.gz$", full.names=T, recursive=F)
   
@@ -26,8 +31,16 @@ read_snv_samples_from_vcf <- function(sample_location_directory, sample_meta){
   for(cur_file in files){
     #Extract tumor_wgs_aliquot_id from filename
     cur_tumor_uuid = gsub(".*([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}).*", "\\1", x=cur_file)
-    snv_samples[cur_tumor_uuid] = readVcf(cur_file, genome="hs37d5")
+    
+    if(!missing(range)){
+      tab = TabixFile(cur_file)
+      snv_samples[cur_tumor_uuid] = readVcf(tab, "hs37d5", param=range)
+    }else{
+      snv_samples[cur_tumor_uuid] = readVcf(cur_file, genome="hs37d5")
+    }
   }
+  
+  return(snv_samples)
 }
 
 #Save SNV samples in R format to a specified location

@@ -3,93 +3,62 @@ library(data.table)
 library(pcawg.common)
 
 #Read in metadata
-sample_meta = get_pcawg_metadata("~/Downloads/pcawg_data/sample_metadata/pcawg_summary.tsv")
+sample_meta = get_pcawg_metadata("~/Downloads/pcawg_data/sample_metadata/pcawg_summary.tsv", split_multi_tumors = F)
+
+sample_meta = keep_first_of_multi_tumors(sample_meta)
 
 #Load germline deletions data
-load("~/Downloads/pcawg_data/germline_deletions/dels.Rdata")
+#load("~/Downloads/pcawg_data/germline_deletions/dels.Rdata")
+load("~/Downloads/pcawg_data/germline_deletions/dels_chr22.Rdata")
+
+set_deletion_range_ends(deletions)
+
+deletion_genotypes = geno(deletions)$GT[,match(sample_meta$normal_wgs_aliquot_id, colnames(geno(deletions)$GT))] 
+
 
 #Load somatic SNV data
-load("~/Downloads/pcawg_data/snv_samples.Rdata")
+#load("~/Downloads/pcawg_data/snv_samples.Rdata")
+load("~/Downloads/pcawg_data/snv_samples_chr22.Rdata")
+
+snv_samples = snv_samples[match(sample_meta$tumor_wgs_aliquot_id, names(snv_samples))]
+
+#Detect and remove samples that are missing deletions or SNV calls
+missing_sample_indices = c(which(is.na(colnames(deletion_genotypes))), which(is.na(names(snv_samples))))
+
+sample_meta = sample_meta[-missing_sample_indices,]
+deletion_genotypes = deletion_genotypes[,-missing_sample_indices]
+snv_samples = snv_samples[-missing_sample_indices]
+
+colnames(deletion_genotypes) = sample_meta$donor_unique_id
+names(snv_samples) = sample_meta$donor_unique_id
 
 #Compute matrix with 1 for heterozygous carriers of a deletion, 0 for non-carriers (hom ref), and NA for others
-deletion_carrier_mask = get_het_carrier_mask(geno(germline_deletions)$GT)
+deletion_carrier_mask = get_het_carrier_mask(deletion_genotypes)
 
 #Number of het carriers per deletion
 carrier_counts = rowSums(deletion_carrier_mask, na.rm = T)
 
+min_carrier_count = 5
+
+deletion_filter = which(carrier_counts < min_carrier_count)
+
+deletion_ranges = rowRanges(deletions)[-deletion_filter]
+deletion_genotypes = deletion_genotypes[-deletion_filter,]
+deletion_carrier_mask = t(deletion_carrier_mask[-deletion_filter,])
+
 #Compute a matrix with count of SNVs overlying each deletion
-snv_hits = do.call(rbind, lapply(snv_samples, function(x) as.table(findOverlaps(rowRanges(germline_deletions), rowRanges(x)))))
+snv_hits = do.call(rbind, lapply(snv_samples, function(x) as.table(findOverlaps(deletion_ranges, rowRanges(x)))))
 
-colnames(snv_hits) = rownames(germline_deletions)
-
+colnames(snv_hits) = rownames(deletion_genotypes)
 
 # Normalize each sample by number of SNVs in that sample
 # Normalize each deletion by deletion width
-normalize_snv_counts <- function(snv_hits){
-  del_widths =  width(ranges(rowRanges(germline_deletions)))
-  snv_counts = unlist(lapply(snv_samples, length))
+del_widths =  width(ranges(deletion_ranges))
+snv_counts = unlist(lapply(snv_samples, length))
   
-  return(snv_hits / snv_counts / del_widths[col(snv_hits)])
-  
-}
+normalized_snv_hits = snv_hits / snv_counts / del_widths[col(snv_hits)]
 
-normalized_snv_hits = normalize_snv_counts(snv_hits)
-
-
-
-
-
-# Normal samples that deletions have been called in
-normal_wgs_aliquots = colnames(dels)
-
-# Select donor_unique_id, normal_wgs_aliquot_id, tumor_wgs_aliquot_id from sample metadata
-sub_meta = sample_meta[which(sample_meta$normal_wgs_aliquot_id %in% normal_wgs_aliquots),c("normal_wgs_aliquot_id", "donor_unique_id", "tumor_wgs_aliquot_id")]
-
-# For samples with mutliple tumors take the first one in the list
-sub_meta$tumor_wgs_aliquot_id = sapply(sub_meta$tumor_wgs_aliquot_id, function(x) as.factor(strsplit(as.character(x), ',')[[1]][1]))
-
-# Rename columns to donors in deletions data frame
-colnames(dels) = sapply(colnames(dels), function(x) sub_meta[sub_meta$normal_wgs_aliquot_id == x, "donor_unique_id"])
-
-
-#Data frame of heterozygous deletion carriers 
-het_carriers = as.data.frame(t(apply(geno(dels)$GT, MARGIN=c(1,2), FUN=genotypeMask, genotypes_list=c("0/1", "1/0"))))
-het_carriers$donor_unique_id = sub_meta$donor_unique_id
-
-#Data frame of deletion non-carriers (includes ref, hom alt, and no-calls) 
-non_carriers = as.data.frame(t(apply(geno(dels)$GT, MARGIN=c(1,2), FUN=genotypeMask, genotypes_list=c("0/0"))))
-non_carriers$donor_unique_id = sub_meta$donor_unique_id
-
-
-snv_samples = list()
-snv_hits = data.frame(matrix(ncol=length(rownames(dels)), nrow=0))
-hit_donor_ids = list()
-
-# Go through SNV samples patient-by-patient and calculate overlap with deletions
-# Store overlaps in snp_hits (rows ar donors, columns are deletions)
-for(aliquot in sub_meta$tumor_wgs_aliquot_id){
-  tabix_filename = paste("~/Downloads/pcawg_data/somatic_snv_mnv/",aliquot,".annotated.snv_mnv.vcf.gz", sep="")
-  if(file.exists(tabix_filename)){
-    tab = TabixFile(tabix_filename)
-    snv_samples[aliquot] = readVcf(tab, "hs37d5", param=rng)
-    
-    num_snv = length(snv_samples[[aliquot]])
-    
-    #List of donor IDs that have SNVs called in the tumor
-    hit_donor_ids = c(hit_donor_ids, as.character(sub_meta[sub_meta$tumor_wgs_aliquot_id == aliquot,]$donor_unique_id))
-    
-    per_del_hits = as.table(findOverlaps(rowRanges(dels), rowRanges(snv_samples[[aliquot]])))
-    # Normalize number of hits by total SNV count for sample and by deletion width
-    norm_per_del_hits = per_del_hits / num_snv / width(ranges(rowRanges(dels)))
-    
-    snv_hits = rbind(snv_hits, norm_per_del_hits)
-  }
-}
-
-colnames(snv_hits) = as.character(rownames(dels))
-
-#Add column of donor IDs to the snp_hits data frame.
-snv_hits$donor_unique_id = unlist(hit_donor_ids)
+dim(normalized_snv_hits)
 
 calculate_hits <- function(my_data){
   hit_list = list()
