@@ -1,7 +1,7 @@
 <ANALYSIS_SET xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ncbi.nlm.nih.gov/viewvc/v1/trunk/sra/doc/SRA_1-5/SRA.analysis.xsd?view=co">
-    <ANALYSIS center_name="EBI" analysis_center="ebi" analysis_date="2015-06-21T07:01:44">
+    <ANALYSIS center_name="EBI-EMBL" analysis_center="ebi-embl" analysis_date="2015-06-21T07:01:44">
       <TITLE>ICGC PanCancer germline SNV genotypes for sites with >1% MAF in 1000 Genomes project</TITLE>
-      <STUDY_REF refcenter="ICGC" refname="icgc_pancancer_vcf"/>
+      <STUDY_REF refcenter="OICR" refname="icgc_pancancer_vcf"/>
       <DESCRIPTION>This file contains germline genotypes of ICGC PanCancer donors for SNVs detected at at least 1% MAF in 1000 Genomes Project. The genotypes were called using donors' normal tissue samples.</DESCRIPTION>
       <ANALYSIS_TYPE>
         <REFERENCE_ALIGNMENT>
