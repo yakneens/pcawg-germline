@@ -8,8 +8,8 @@ sample_meta = get_pcawg_metadata("~/Downloads/pcawg_data/sample_metadata/pcawg_s
 sample_meta = keep_first_of_multi_tumors(sample_meta)
 
 #Load germline deletions data
-#load("~/Downloads/pcawg_data/germline_deletions/dels.Rdata")
-load("~/Downloads/pcawg_data/germline_deletions/dels_chr22.Rdata")
+load("~/Downloads/pcawg_data/germline_deletions/dels.Rdata")
+#load("~/Downloads/pcawg_data/germline_deletions/dels_chr22.Rdata")
 
 set_deletion_range_ends(deletions)
 
@@ -17,8 +17,8 @@ deletion_genotypes = geno(deletions)$GT[,match(sample_meta$normal_wgs_aliquot_id
 
 
 #Load somatic SNV data
-#load("~/Downloads/pcawg_data/snv_samples.Rdata")
-load("~/Downloads/pcawg_data/snv_samples_chr22.Rdata")
+load("~/Downloads/pcawg_data/snv_samples.Rdata")
+#load("~/Downloads/pcawg_data/snv_samples_chr22.Rdata")
 
 snv_samples = snv_samples[match(sample_meta$tumor_wgs_aliquot_id, names(snv_samples))]
 
@@ -58,70 +58,60 @@ snv_counts = unlist(lapply(snv_samples, length))
   
 normalized_snv_hits = snv_hits / snv_counts / del_widths[col(snv_hits)]
 
-dim(normalized_snv_hits)
+wilcox_pvals = c()
 
-calculate_hits <- function(my_data){
-  hit_list = list()
-  
-  #Last column has donor IDs, so don't consider it
-  for(del_name in head(colnames(my_data), n=-1)){
-    #Select donors that have the feature of interest
-    selection = my_data[which(my_data[, del_name] == 1), "donor_unique_id"]
-    
-    #Select number of SNP hits falling on this deletion for each donor in selection
-    hits = snv_hits[which(snv_hits$donor_unique_id %in% selection), del_name]
-    hit_list = c(hit_list, list(hits))
-  }
-  
-  return(hit_list)
+for(i in 1 : dim(normalized_snv_hits)[2]) {
+  wilcox_pvals[i] = wilcox.test(normalized_snv_hits[deletion_carrier_mask[,i] == 1,i], normalized_snv_hits[deletion_carrier_mask[,i] == 0,i])$p.value
 }
 
-carrier_hits =  calculate_hits(het_carriers)
+mean_counts = list()
 
-#Dosage correction
-#carrier_hits = lapply(carrier_hits, function(x) 2*x)
+#Calculate mean counts among carriers and non-carriers.
+for(i in 1 : dim(normalized_snv_hits)[2]) {
+  mean_counts[[i]] = c(mean(normalized_snv_hits[deletion_carrier_mask[,i] == 1,i], na.rm = T), mean(normalized_snv_hits[deletion_carrier_mask[,i] == 0,i], na.rm = T))
+}
 
-carrier_means = unlist(lapply(carrier_hits, mean))
+mean_counts = do.call(rbind, mean_counts)
 
-non_carrier_hits = calculate_hits(non_carriers)
-non_carrier_means = unlist(lapply(non_carrier_hits, mean))
+count_df = as.data.frame(mean_counts)
+colnames(count_df) = c("carriers", "non_carriers")
+count_df$wilcox_pvals = pvals
+count_df$widths = width(deletion_ranges)
+count_df$carrier_counts = carrier_counts[-deletion_filter]
 
-t.test(carrier_means, non_carrier_means)
-wilcox.test(carrier_means, non_carrier_means)
+mean_difs = mean_counts[,1] - mean_counts[,2]
 
+pre_flanks = flank(deletion_ranges, width(deletion_ranges) / 2, start = T)
+pre_hits = do.call(rbind, lapply(snv_samples, function(x) as.table(findOverlaps(pre_flanks, rowRanges(x)))))
 
-# Get rid of observations where there were 0 SNVs observed in deletion carriers
-dels_with_carrier_hit_indices = which(lapply(carrier_hits, sum) > 0)
-non_zero_carrier_hits = carrier_hits[dels_with_carrier_hit_indices]
-non_zero_non_carrier_hits = non_carrier_hits[dels_with_carrier_hit_indices]
+post_flanks = flank(deletion_ranges, width(deletion_ranges) / 2, start = F)
+post_hits = do.call(rbind, lapply(snv_samples, function(x) as.table(findOverlaps(post_flanks, rowRanges(x)))))
 
-non_zero_carrier_hits_means = unlist(lapply(non_zero_carrier_hits, mean))
-non_zero_non_carrier_hits_means = unlist(lapply(non_zero_non_carrier_hits, mean))
+flank_hits = pre_hits + post_hits
+normalized_flank_hits = flank_hits / snv_counts / del_widths[col(flank_hits)]
 
-t.test(non_zero_carrier_hits_means, non_zero_non_carrier_hits_means)
-wilcox.test(non_zero_carrier_hits_means, non_zero_non_carrier_hits_means)
+mean_flank_counts = list()
+for(i in 1 : dim(normalized_snv_hits)[2]) {
+  mean_flank_counts[[i]] = c(mean(normalized_snv_hits[deletion_carrier_mask[,i] == 1,i], na.rm = T), mean(normalized_flank_hits[deletion_carrier_mask[,i] == 1,i], na.rm = T))
+}
 
-boxplot(log(non_zero_carrier_hits_means), log(non_zero_non_carrier_hits_means))
+flank_wilcox_pvals = c()
+flank_ttest_pvals = c()
+flank_cors = c()
+for(i in 1 : dim(normalized_snv_hits)[2]) {
+  #flank_pvals[i] = t.test(na.omit(normalized_snv_hits[deletion_carrier_mask[,i] == 1,i]), na.omit(normalized_flank_hits[deletion_carrier_mask[,i] == 1,i]))$p.value
+  flank_wilcox_pvals[i] = wilcox.test(na.omit(normalized_snv_hits[deletion_carrier_mask[,i] == 1,i]), na.omit(normalized_flank_hits[deletion_carrier_mask[,i] == 1,i]), paired = T)$p.value
+  flank_ttest_pvals[i] = t.test(na.omit(normalized_snv_hits[deletion_carrier_mask[,i] == 1,i]), na.omit(normalized_flank_hits[deletion_carrier_mask[,i] == 1,i]), paired = T)$p.value
+  flank_cors[i] = cor(na.omit(normalized_snv_hits[deletion_carrier_mask[,i] == 1,i]), na.omit(normalized_flank_hits[deletion_carrier_mask[,i] == 1,i]))
+}
 
-par(mfrow=c(1,2))
-hist(log(carrier_means), col=rgb(0.8,0.8,0.8,0.5), ylim=c(0,250))
-hist(log(non_carrier_means), col=rgb(0.1,0.1,0.1,0.5),  add=T) 
+mean_flank_counts = do.call(rbind, mean_flank_counts)
+mean_flank_difs = mean_flank_counts[,1] - mean_flank_counts[,2]
 
-hist(log(non_zero_carrier_hits_means), col=rgb(0.8,0.8,0.8,0.5), ylim=c(0, 50))
-hist(log(non_zero_non_carrier_hits_means), col=rgb(0.1,0.1,0.1,0.5),  add=T) 
-
-max_carrier_density_index = which(lapply(carrier_hits, max) == max(unlist(lapply(carrier_hits, max))))
-max(unlist(carrier_hits[max_carrier_density_index]))
-max(unlist(non_carrier_hits[max_carrier_density_index]))
-
-max_non_carrier_density_index = which(lapply(non_carrier_hits, max) == max(unlist(lapply(non_carrier_hits, max))))
-max(unlist(carrier_hits[max_non_carrier_density_index]))
-max(unlist(non_carrier_hits[max_non_carrier_density_index]))
-
-max_mean_carrier_density_index = which(carrier_means == max(carrier_means, na.rm=TRUE))
-carrier_means[max_mean_carrier_density_index]
-non_carrier_means[max_mean_carrier_density_index]
-
-max_mean_non_carrier_density_index = which(non_carrier_means == max(non_carrier_means, na.rm=TRUE))
-carrier_means[max_mean_non_carrier_density_index]
-non_carrier_means[max_mean_non_carrier_density_index]
+flank_df = as.data.frame(mean_flank_counts)
+colnames(flank_df) = c("dels", "flanks")
+flank_df$widths = width(deletion_ranges)
+flank_df$carrier_counts = carrier_counts[-deletion_filter]
+flank_df$wilcox_pvals = flank_wilcox_pvals
+flank_df$ttest_pvals = flank_ttest_pvals
+flank_df$chr = as.character(seqnames(deletion_ranges))
