@@ -97,3 +97,19 @@ get_het_carrier_mask <- function(my_data){
   return(as.data.frame(apply(my_data, MARGIN=c(1,2), FUN=mark_carriers_and_non_carriers)))
 }
 
+get_clinical_metadata <- function(file_location, sample_metadata){
+  clinical_metadata = read.csv(file_location, sep = "\t", stringsAsFactors = F)
+  colnames(clinical_metadata)[1] = "donor_unique_id"
+  clinical_metadata = clinical_metadata[match(sample_metadata$donor_unique_id, clinical_metadata$donor_unique_id),]
+  clinical_metadata[clinical_metadata$donor_sex == "" & !is.na(clinical_metadata$donor_sex),]$donor_sex = NA
+  clinical_metadata$donor_unique_id = sample_metadata$donor_unique_id
+  
+  return(clinical_metadata)
+}
+
+get_histology_metadata <- function(file_location, sample_metadata){
+  hist_meta = read.csv(file_location, sep = "\t", stringsAsFactors = F)
+  hist_meta = hist_meta[match(sample_metadata$donor_unique_id, hist_meta$donor_unique_id),]
+  return(hist_meta)
+  
+}

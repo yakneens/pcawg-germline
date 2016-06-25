@@ -1,11 +1,21 @@
 library(VariantAnnotation)
 library(data.table)
 library(pcawg.common)
+library(GenomicFeatures)
+library(TxDb.Hsapiens.UCSC.hg19.knownGene)
+library(rtracklayer)
+library(org.Hs.eg.db)
+library(COSMIC.67)
+
 
 #Read in metadata
 sample_meta = get_pcawg_metadata("~/Downloads/pcawg_data/sample_metadata/pcawg_summary.tsv", split_multi_tumors = F)
 
 sample_meta = keep_first_of_multi_tumors(sample_meta)
+
+clinical_meta = get_clinical_metadata("~/Downloads/pcawg_data/clinical_metadata/pcawg_donor_clinical_May2016_v2.tsv", sample_meta)
+
+hist_meta = get_histology_metadata("~/Downloads/pcawg_data/clinical_metadata/pcawg_specimen_histology_May2016_v2.tsv", sample_meta)
 
 #Load germline deletions data
 load("~/Downloads/pcawg_data/germline_deletions/dels.Rdata")
@@ -26,6 +36,8 @@ snv_samples = snv_samples[match(sample_meta$tumor_wgs_aliquot_id, names(snv_samp
 missing_sample_indices = c(which(is.na(colnames(deletion_genotypes))), which(is.na(names(snv_samples))))
 
 sample_meta = sample_meta[-missing_sample_indices,]
+clinical_meta = clinical_meta[-missing_sample_indices,]
+hist_meta = hist_meta[-missing_sample_indices,]
 deletion_genotypes = deletion_genotypes[,-missing_sample_indices]
 snv_samples = snv_samples[-missing_sample_indices]
 
@@ -115,3 +127,28 @@ flank_df$carrier_counts = carrier_counts[-deletion_filter]
 flank_df$wilcox_pvals = flank_wilcox_pvals
 flank_df$ttest_pvals = flank_ttest_pvals
 flank_df$chr = as.character(seqnames(deletion_ranges))
+
+
+txdb <- TxDb.Hsapiens.UCSC.hg19.knownGene
+import.chain("~/Downloads/pcawg_data/external_data/hg19ToGRCh37.over.chain")
+genes_grch37 = liftOver(genes(txdb), ch)
+
+num_hypotheses = dim(normalized_snv_hits)[2]
+significance_threshold = 0.05 / num_hypotheses
+
+#sig_idx = intersect(which(count_df$wilcox_pvals < 0.01), which(flank_df$wilcox_pvals < 0.01))
+sig_idx = which(count_df$wilcox_pvals < significance_threshold)
+#sig_idx = which(flank_df$wilcox_pvals < significance_threshold)
+
+sig_dels = deletion_ranges[sig_idx]
+del_gene_overlaps = findOverlaps(sig_dels, genes_grch37)
+gene_hits = genes_grch37[subjectHits(del_gene_overlaps)]
+
+gene_hit_details = select(org.Hs.eg.db, unlist(gene_hits)$gene_id, c("SYMBOL", "GENENAME"))
+
+data("cgc_67", package="COSMIC.67")
+if(any(unlist(gene_hits)$gene_id %in% cgc_67$ENTREZID)){
+  cosmic_gene_hits = gene_hit_details[na.omit(match(cgc_67$ENTREZID, unlist(gene_hits)$gene_id)),] 
+}
+
+master_hit_df = cbind(flank_df[sig_idx[queryHits(del_gene_overlaps)],], count_df[sig_idx[queryHits(del_gene_overlaps)],], gene_hit_details)
