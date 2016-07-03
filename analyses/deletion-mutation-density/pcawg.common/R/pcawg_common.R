@@ -3,8 +3,11 @@ library(splitstackshape)
 
 
 #Read in sample metadata
-get_pcawg_metadata <- function(file_location, split_multi_tumors = T){
-  sample_meta = read.table(file_location, header=TRUE, sep="\t", stringsAsFactors = F)
+get_pcawg_metadata <- function(sample_file_location, blacklist_file_location, split_multi_tumors = T){
+  sample_meta = read.table(sample_file_location, header=TRUE, sep="\t", stringsAsFactors = F)
+  blacklist_meta = read.table(blacklist_file_location, header=TRUE, sep="\t", stringsAsFactors = F)
+  
+  sample_meta = sample_meta[-na.omit(match(blacklist_meta$donor_unique_id, sample_meta$donor_unique_id)),]
   
   if(split_multi_tumors){
     library(splitstackshape)
@@ -64,6 +67,18 @@ read_germline_deletions_from_vcf <- function(file_location, range){
   
   set_deletion_range_ends(dels)
   return(dels)
+}
+
+#Read in germline deletions
+read_germline_snvs_from_vcf <- function(file_location, range){
+  if(!missing(range)){
+    tab = TabixFile(file_location)
+    germ_snv = readVcf(tab, "hs37d5", param=range)
+  }else{
+    germ_snv = readVcf(file_location, genome="hs37d5")
+  }
+  
+  return(germ_snv)
 }
 
 #Save deletions in R format to a specified location
