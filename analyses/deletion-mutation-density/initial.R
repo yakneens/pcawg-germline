@@ -77,7 +77,8 @@ deletion_carrier_mask = get_het_carrier_mask(deletion_genotypes)
 carrier_counts = rowSums(deletion_carrier_mask, na.rm = T)
 donor_deletion_counts = colSums(deletion_carrier_mask, na.rm = T)
 
-carrier_summary = as.data.frame(table(carrier_counts))
+carrier_summary = as.data.table(table(carrier_counts))
+carrier_summary[,carrier_counts := as.numeric(carrier_counts)]
 
 min_carrier_count = 5
 
@@ -99,33 +100,6 @@ snv_counts = unlist(lapply(snv_samples, length))
   
 normalized_snv_hits = snv_hits / snv_counts / del_widths[col(snv_hits)]
 
-wilcox_pvals = c()
-# Test each deletion individually, among carriers and non-carriers, via Mann Whitney U test 
-for(i in 1 : dim(normalized_snv_hits)[2]) {
-  wilcox_pvals[i] = wilcox.test(normalized_snv_hits[deletion_carrier_mask[,i] == 1,i], 
-                                normalized_snv_hits[deletion_carrier_mask[,i] == 0,i])$p.value
-}
-
-mean_counts = list()
-
-#Calculate mean counts among carriers and non-carriers.
-for(i in 1 : dim(normalized_snv_hits)[2]) {
-  mean_counts[[i]] = c(mean(normalized_snv_hits[deletion_carrier_mask[,i] == 1,i], na.rm = T), 
-                       mean(normalized_snv_hits[deletion_carrier_mask[,i] == 0,i], na.rm = T))
-}
-
-mean_counts = do.call(rbind, mean_counts)
-
-count_df = as.data.frame(mean_counts)
-colnames(count_df) = c("carriers", "non_carriers")
-count_df$wilcox_pvals = wilcox_pvals
-count_df$widths = width(deletion_ranges)
-count_df$carrier_counts = carrier_counts[-deletion_filter]
-rownames(count_df) = rownames(deletion_genotypes)
-
-mean_difs = mean_counts[,1] - mean_counts[,2]
-mean_ratios = mean_counts[,1] / mean_counts[,2]
-
 pre_flanks = flank(deletion_ranges, width(deletion_ranges) / 2, start = T)
 pre_hits = do.call(rbind, lapply(snv_samples, function(x) as.table(findOverlaps(pre_flanks, rowRanges(x)))))
 
@@ -137,17 +111,25 @@ normalized_flank_hits = flank_hits / snv_counts / del_widths[col(flank_hits)]
 
 rm(pre_flanks, pre_hits, post_flanks, post_hits)
 
-mean_flank_counts = list()
-for(i in 1 : dim(normalized_snv_hits)[2]) {
-  mean_flank_counts[[i]] = c(mean(normalized_snv_hits[deletion_carrier_mask[,i] == 1,i], na.rm = T), 
-                             mean(normalized_flank_hits[deletion_carrier_mask[,i] == 1,i], na.rm = T))
-}
 
+wilcox_pvals = c()
+mean_counts = list()
 flank_wilcox_pvals = c()
 flank_ttest_pvals = c()
 flank_cors = c()
+
+num_hypotheses_dels = dim(normalized_snv_hits)[2]
+num_hypotheses_donors = dim(normalized_snv_hits)[1]
+significance_threshold_dels = 0.05 / num_hypotheses_dels
+significance_threshold_donors = 0.05 / num_hypotheses_donors
+
+# Test each deletion individually, among carriers and non-carriers, and among deletions and flanks 
 for(i in 1 : dim(normalized_snv_hits)[2]) {
-  #flank_pvals[i] = t.test(na.omit(normalized_snv_hits[deletion_carrier_mask[,i] == 1,i]), na.omit(normalized_flank_hits[deletion_carrier_mask[,i] == 1,i]))$p.value
+  mean_counts[[i]] = c(mean(normalized_snv_hits[deletion_carrier_mask[,i] == 1,i], na.rm = T), 
+                       mean(normalized_snv_hits[deletion_carrier_mask[,i] == 0,i], na.rm = T),
+                       mean(normalized_flank_hits[deletion_carrier_mask[,i] == 1,i], na.rm = T))
+  wilcox_pvals[i] = wilcox.test(normalized_snv_hits[deletion_carrier_mask[,i] == 1,i], 
+                                normalized_snv_hits[deletion_carrier_mask[,i] == 0,i])$p.value
   flank_wilcox_pvals[i] = wilcox.test(na.omit(normalized_snv_hits[deletion_carrier_mask[,i] == 1,i]), 
                                       na.omit(normalized_flank_hits[deletion_carrier_mask[,i] == 1,i]), paired = T)$p.value
   flank_ttest_pvals[i] = t.test(na.omit(normalized_snv_hits[deletion_carrier_mask[,i] == 1,i]), 
@@ -156,78 +138,51 @@ for(i in 1 : dim(normalized_snv_hits)[2]) {
                       na.omit(normalized_flank_hits[deletion_carrier_mask[,i] == 1,i]))
 }
 
-mean_flank_counts = do.call(rbind, mean_flank_counts)
-mean_flank_difs = mean_flank_counts[,1] - mean_flank_counts[,2]
+results_by_del = as.data.table(do.call(rbind, mean_counts))
+setnames(results_by_del, c("carriers", "non_carriers", "flanks"))
 
-flank_df = as.data.frame(mean_flank_counts)
-colnames(flank_df) = c("dels", "flanks")
-flank_df$widths = width(deletion_ranges)
-flank_df$carrier_counts = carrier_counts[-deletion_filter]
-flank_df$wilcox_pvals = flank_wilcox_pvals
-flank_df$ttest_pvals = flank_ttest_pvals
-flank_df$chr = as.character(seqnames(deletion_ranges))
-rownames(flank_df) = rownames(deletion_genotypes)
+results_by_del[, `:=` (c_vs_nc_wilcox_pvals = wilcox_pvals,
+                       c_vs_nc_mean_difs = carriers - non_carriers,
+                       c_vs_nc_mean_ratios = carriers / non_carriers,
+                       del_widths = width(deletion_ranges),
+                       carrier_counts = carrier_counts[-deletion_filter],
+                       chr = as.character(seqnames(deletion_ranges)),
+                       d_vs_f_wilcox_pvals = unlist(flank_wilcox_pvals),
+                       d_vs_f_ttest_pvals = unlist(flank_ttest_pvals),
+                       d_vs_f_cors = unlist(flank_cors),
+                       d_vs_f_mean_difs = carriers - flanks,
+                       d_vs_f_mean_ratios = carriers / flanks
+                       )]
 
-txdb <- TxDb.Hsapiens.UCSC.hg19.knownGene
-ch = import.chain("~/Downloads/pcawg_data/external_data/hg19ToGRCh37.over.chain")
-genes_grch37 = liftOver(genes(txdb), ch)
 
-num_hypotheses = dim(normalized_snv_hits)[2]
-significance_threshold = 0.05 / num_hypotheses
-
-#sig_idx = intersect(which(count_df$wilcox_pvals < 0.01), which(flank_df$wilcox_pvals < 0.01))
-sig_idx = which(count_df$wilcox_pvals < significance_threshold)
-#sig_idx = which(flank_df$wilcox_pvals < significance_threshold)
-
-sig_dels = deletion_ranges[sig_idx]
-del_gene_overlaps = findOverlaps(sig_dels, genes_grch37)
-gene_hits = genes_grch37[subjectHits(del_gene_overlaps)]
-
-gene_hit_details = select(org.Hs.eg.db, unlist(gene_hits)$gene_id, c("SYMBOL", "GENENAME"))
-
-data("cgc_67", package="COSMIC.67")
-if(any(unlist(gene_hits)$gene_id %in% cgc_67$ENTREZID)){
-  cosmic_gene_hits = gene_hit_details[na.omit(match(cgc_67$ENTREZID, unlist(gene_hits)$gene_id)),] 
+donor_counts = list()
+donor_wilcox_pvals = list()
+donor_ttest_pvals = list()
+donor_cors = list()
+for(i in 1 : dim(normalized_snv_hits)[1]){
+  donor_counts[[i]] = c(mean(normalized_snv_hits[i, deletion_carrier_mask[i,] == 1], na.rm = T), 
+                          mean(normalized_flank_hits[i, deletion_carrier_mask[i,] == 1], na.rm = T))
+  donor_wilcox_pvals[[i]] = wilcox.test(na.omit(normalized_snv_hits[i, deletion_carrier_mask[i,] == 1]), 
+                                      na.omit(normalized_flank_hits[i, deletion_carrier_mask[i,] == 1]), paired = T)$p.value
+  donor_ttest_pvals[[i]] = t.test(na.omit(normalized_snv_hits[i, deletion_carrier_mask[i,] == 1]), 
+                                na.omit(normalized_flank_hits[i, deletion_carrier_mask[i,] == 1]), paired = T)$p.value
+  donor_cors[[i]] = cor(na.omit(normalized_snv_hits[i, deletion_carrier_mask[i,] == 1]), 
+                      na.omit(normalized_flank_hits[i, deletion_carrier_mask[i,] == 1]))
 }
 
-master_hit_df = cbind(flank_df[sig_idx[queryHits(del_gene_overlaps)],], count_df[sig_idx[queryHits(del_gene_overlaps)],], gene_hit_details)
+results_by_donor = as.data.table(do.call(rbind, donor_counts))
+colnames(results_by_donor) = c("dels", "flanks")
+results_by_donor = cbind(results_by_donor, donor_meta)
+results_by_donor[, `:=` (wilcox_pvals = unlist(donor_wilcox_pvals),
+                         ttest_pvals = unlist(donor_ttest_pvals),
+                         cors = unlist(donor_cors),
+                         mean_ratios = dels / flanks,
+                         snv_counts = snv_counts,
+                         donor_deletion_counts = donor_deletion_counts,
+                         age_bin = findInterval(donor_age_at_diagnosis, seq(0,100,10)))]
 
-cosmic_hit_idx = match(cosmic_gene_hits$ENTREZID, master_hit_df$ENTREZID)
-cosmic_hit_deletions = rownames(master_hit_df[cosmic_hit_idx,])
+rm(donor_counts, donor_wilcox_pvals, donor_ttest_pvals, donor_cors)
 
-mapkapk5 = which(gene_hit_details$SYMBOL == "MAPKAPK5")
-mapkapk5_del = rownames(master_hit_df[mapkapk5,])
-
-interesting_deletions = c(cosmic_hit_deletions, mapkapk5_del)
-
-for(i in interesting_deletions){
-  print(table(na.omit(snv_hits[deletion_carrier_mask[, i] == 1,i])))
-  print(table(na.omit(snv_hits[deletion_carrier_mask[, i] == 0,i])))
-}
-
-hs_chrs = as(seqinfo(BSgenome.Hsapiens.1000genomes.hs37d5), "GRanges")
-hs_chrs = keepSeqlevels(hs_chrs, c(1:22, "X", "Y"))
-
-
-g_bins = tileGenome(seqlengths(hs_chrs), tilewidth=1000, cut.last.tile.in.chrom=T)
-g_bins_100kb = tileGenome(seqlengths(hs_chrs), tilewidth=100000, cut.last.tile.in.chrom=T)
-g_bins_1mb = tileGenome(seqlengths(hs_chrs), tilewidth=1000000, cut.last.tile.in.chrom=T)
-a = as.table(findOverlaps(g_bins_1mb, rowRanges(snv_samples[[1]])))
-a_idx = seq(a)[which(a >0)]
-a = a[which(a >0)]
-
-b = snv_hits[1,] / del_widths * 1000
-b2 = b[which(deletion_carrier_mask[1,] == 1)]
-deletion_bins = findOverlaps(deletion_ranges, g_bins_1mb)
-b2_bins = subjectHits(deletion_bins[which(deletion_carrier_mask[1,] == 1),])
-plot.new()
-plot_snp_density = data.frame(seq(length(a)),a)
-colnames(plot_snp_density) = c("bin", "density")
-ggplot(data=plot_snp_density, aes(x=bin, y=density)) + geom_point() +  geom_smooth(span=0.00000000001)
-
-smoothScatter(seq(length(a)),a)
-spl = smooth.spline(seq(length(a)), a, spar=0.1)
-lines(spl, col="green", lwd=2)
-points(b2_bins[which(b2 >0)], b2[which(b2>0)], col = "red")
-
-
+filtered_results_by_donor = results_by_donor[which(is.finite(mean_ratios) & donor_diagnosis_icd10 != "")]
+donor_count_model = glm(data=filtered_results_by_donor, formula=dels ~ donor_diagnosis_icd10 + tumour_stage + tumour_histological_code + flanks + level_of_cellularity + tumour_grade + dcc_project_code + snv_counts)
+anova(donor_count_model, test="Chisq")
