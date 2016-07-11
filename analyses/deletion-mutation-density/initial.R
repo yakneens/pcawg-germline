@@ -154,6 +154,9 @@ results_by_del[, `:=` (c_vs_nc_wilcox_pvals = wilcox_pvals,
                        d_vs_f_mean_ratios = carriers / flanks
                        )]
 
+#Test distribution of mean SNV density among deletions for carriers-vs-non-carriers 
+c_vs_nc_del_population_test = wilcox.test(results_by_del$carriers, results_by_del$non_carriers, paired=F, conf.int=T)
+d_vs_f_del_population_test = wilcox.test(results_by_del$carriers, results_by_del$flanks, paired=T, conf.int = T)
 
 donor_counts = list()
 donor_wilcox_pvals = list()
@@ -183,6 +186,10 @@ results_by_donor[, `:=` (wilcox_pvals = unlist(donor_wilcox_pvals),
 
 rm(donor_counts, donor_wilcox_pvals, donor_ttest_pvals, donor_cors)
 
+d_vs_f_donor_population_test = wilcox.test(results_by_donor$dels, results_by_donor$flanks, paired = T, conf.int = T)
+
 filtered_results_by_donor = results_by_donor[which(is.finite(mean_ratios) & donor_diagnosis_icd10 != "")]
 donor_count_model = glm(data=filtered_results_by_donor, formula=dels ~ donor_diagnosis_icd10 + tumour_stage + tumour_histological_code + flanks + level_of_cellularity + tumour_grade + dcc_project_code + snv_counts)
 anova(donor_count_model, test="Chisq")
+
+

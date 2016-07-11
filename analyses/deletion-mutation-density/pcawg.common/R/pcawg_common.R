@@ -1,6 +1,6 @@
 library(VariantAnnotation)
 library(splitstackshape)
-
+library(ggplot2)
 
 #Read in sample metadata
 get_pcawg_metadata <- function(sample_file_location, blacklist_file_location, split_multi_tumors = T){
@@ -132,4 +132,13 @@ get_histology_metadata <- function(file_location, sample_metadata){
   
   return(hist_meta)
   
+}
+
+plot_ordered_boxes <- function(data, x_col, y_col, order_func, count_cutoff, exclusions, x_lab, y_lab){
+  filtered_data = data[, count := .N, by=get(x_col)][count > count_cutoff & !get(x_col) %in% exclusions]
+  
+  print(
+    ggplot(filtered_data, aes(x=reorder(get(x_col), get(y_col), FUN=order_func), y=log10(get(y_col)))) + geom_boxplot() + theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+      xlab(x_lab) + ylab(y_lab)
+  )
 }
