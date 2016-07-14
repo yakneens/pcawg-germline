@@ -10,9 +10,10 @@ setnames(plot_data, c("x", "y"))
 # Add labels for COSMIC Cancer Census genes.
 plot_data_to_label = plot_data[sig_idx[queryHits(del_gene_overlaps)][cosmic_hit_idx],]
 plot_data_to_label$gene_symbol = cosmic_gene_hits$SYMBOL
-mapkapk5_row = c(plot_data[sig_idx[queryHits(del_gene_overlaps)][mapkapk5],], master_hit_df[mapkapk5,]$SYMBOL)
-names(mapkapk5_row)[3] = "gene_symbol"
-plot_data_to_label = rbind(plot_data_to_label, mapkapk5_row)
+additional_gene_rows = cbind(plot_data[sig_idx[queryHits(del_gene_overlaps)][additional_interesting_gene_idx],], master_hit_df[additional_interesting_gene_idx,.(SYMBOL)])
+setnames(additional_gene_rows, c("x", "y", "gene_symbol"))
+
+plot_data_to_label = rbind(plot_data_to_label, additional_gene_rows)
 
 ggplot(plot_data) + aes(x=x, y=y) + geom_point(size=0.5) + 
   xlab(expression(paste(log[10](frac(carrier_density,non_carrier_density))))) +
@@ -30,7 +31,8 @@ ggplot(plot_data) + aes(x=x, y=y) + geom_point(size=0.5) +
 results_by_del[, `:=`(chr=as.vector(seqnames(deletion_ranges)), width_bin=findInterval(del_widths, c(500,1000,2000,5000,10000,100000,250000,1000000)), carrier_count_bin=findInterval(carrier_counts, seq(0,300,25)))]
 
 # Carrier vs Non-Carrier mean SNV counts
-ggplot(results_by_del, aes(x=-log10(carriers), y=-log10(non_carriers),colour=factor(carrier_count_bin))) + geom_point()
+ggplot(results_by_del) + geom_point(aes(x=-log10(carriers), y=-log10(non_carriers)))  +  
+  geom_point(aes(x=-log10(mean(carriers)), y=-log10(mean(non_carriers))), col="red", size=5)
 
 # Carrier vs Non-Carrier SNV density plot
 ggplot(melt(results_by_del, measure.vars = c("carriers", "non_carriers")), aes(-log10(value), y=..scaled..,fill=variable)) + geom_density(alpha=0.6) + xlab("-log10(normalized_snv_count)") + ylab("Density")
@@ -49,7 +51,8 @@ ggplot(results_by_del[top_100_pval,]) + geom_point(aes(x=seq(1,100),y=log10(carr
 ### Deletions vs Flanks Plots
 
 # Deletion vs Flank mean SNV counts
-ggplot(results_by_del, aes(x=-log10(carriers), y=-log10(flanks))) + geom_point()
+ggplot(results_by_del) + geom_point(aes(x=-log10(carriers), y=-log10(flanks))) +
+  geom_point(aes(x=-log10(mean(carriers)), y=-log10(mean(flanks))), col="red", size=5)
 
 # Density of SNV counts for deletions and flanks
 ggplot(melt(results_by_del, measure.vars = c("carriers", "flanks")), aes(-log10(value), y=..scaled..,fill=variable)) + geom_density(alpha=0.6) + xlab("-log10(normalized_snv_count)") + ylab("Density")
