@@ -91,7 +91,7 @@ def generate_config_objects(available_samples, num_runs, config_location):
         
         this_config_data = {"sample": {
                                 "donor_index": available_samples[this_run].index,
-                                "sample_id": str.split(available_samples[this_run].sample_id, ",")[0],
+                                "sample_id": available_samples[this_run].sample_id.split(",")[0],
                                 "sample_location": available_samples[this_run].sample_location
                                 }
                             }
