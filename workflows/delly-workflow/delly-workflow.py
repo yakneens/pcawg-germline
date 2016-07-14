@@ -39,7 +39,7 @@ def run_delly(**kwargs):
     log_filename = "{}/{}_{}.log".format(
         result_path_prefix, sample_id, variants_type)
 
-    delly_command = "{} -t {} -g {} -v {} -o {} -x {} {} > {}".\
+    delly_command = "{} call -t {} -g {} -v {} -o {} -x {} {} > {}".\
         format(delly_path,
                variants_type,
                reference_location,
