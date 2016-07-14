@@ -33,7 +33,7 @@ def run_delly(**kwargs):
     variants_type = config["variants_type"]
     exclude_template_path = config["delly"]["exclude_template_path"]
 
-    result_filename = "{}/{}_{}.vcf.gz".format(
+    result_filename = "{}/{}_{}.bcf".format(
         result_path_prefix, sample_id, variants_type)
     
     log_filename = "{}/{}_{}.log".format(
