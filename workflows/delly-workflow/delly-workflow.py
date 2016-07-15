@@ -51,9 +51,9 @@ def run_delly(**kwargs):
 
     call_command(delly_command, "delly")
 
-    uncompressed_result_filename = uncompress_gzip_sample(result_filename, config)
-    compress_sample(uncompressed_result_filename, config)
-    generate_tabix(result_filename, config)
+    #uncompressed_result_filename = uncompress_gzip_sample(result_filename, config)
+    #compress_sample(uncompressed_result_filename, config)
+    ##generate_tabix(result_filename, config)
     copy_result(result_filename, sample_id, config)
 
 
