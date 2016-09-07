@@ -1,0 +1,7 @@
+{
+	"variants_location": "/shared/data/samples/vcf/delly_deletion_sites/dup.sites.bcf",
+	"results_base_path": "/shared/data/results/delly_germline_dups_tumor_07_09_2016/",
+	"results_local_path": "/tmp/delly_germline_dups_tumor/",
+	"variants_type": "DUP"
+	
+}
