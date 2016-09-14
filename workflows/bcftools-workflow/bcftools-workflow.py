@@ -38,8 +38,8 @@ def bcftools(**kwargs):
             "Results directory {} not present, creating.".format(result_path_prefix))
         os.makedirs(result_path_prefix)
 
-    result_filename = "{}/{}_merged.vcf".format(
-        result_path_prefix, sample_filename)
+    result_filename = "{}/{}_merged.vcf.gz".format(
+        result_path_prefix, sample_id)
 
     bcftools_command = 'bcftools {} {} {} -o {}'.\
         format(bcftools_operation,
