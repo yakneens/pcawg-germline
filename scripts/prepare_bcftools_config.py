@@ -63,6 +63,7 @@ def create_configs_command(args):
             this_config_data = {
                                 "sample": {
                                            "sample_id": sample_id,
+                                           "path_prefix": root,
                                            "filename_list": filename_list
                                            }
                                 }
