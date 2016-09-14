@@ -56,7 +56,7 @@ def create_configs_command(args):
     
     for root, dirs, files in os.walk(sample_location):
         sample_id = os.path.basename(root)
-        
+        print "Processing sample: " + sample_id
         filename_list = map(lambda(x): sample_id + "_" + x, postfixed_contig_list)
         
         if num_runs == None or num_configs < num_runs:
