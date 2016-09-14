@@ -6,6 +6,8 @@ import os
 import logging
 from subprocess import call
 
+from string import join
+
 import tracker.model
 from tracker.model.analysis_run import *
 from tracker.util.workflow_common import *
@@ -21,7 +23,7 @@ def bcftools(**kwargs):
     
     filenames_list = sample["filename_list"]
     full_path_filenames_list = map(lambda(x): sample_path_prefix + "/" + x, filenames_list)
-    filenames_string = join(",", full_path_filenames_list)
+    filenames_string = ",".join(full_path_filenames_list)
     
     
     result_path_prefix = config["results_local_path"] + "/" + sample_id
@@ -42,7 +44,7 @@ def bcftools(**kwargs):
     bcftools_command = 'bcftools {} {} {} -o {}'.\
         format(bcftools_operation,
                bcftools_flags,
-               vcffilter_flags,
+               filenames_string,
                result_filename)
     
 
