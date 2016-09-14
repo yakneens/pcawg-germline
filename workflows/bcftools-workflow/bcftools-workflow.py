@@ -23,7 +23,7 @@ def bcftools(**kwargs):
     
     filenames_list = sample["filename_list"]
     full_path_filenames_list = map(lambda(x): sample_path_prefix + "/" + x, filenames_list)
-    filenames_string = ",".join(full_path_filenames_list)
+    filenames_string = " ".join(full_path_filenames_list)
     
     
     result_path_prefix = config["results_local_path"] + "/" + sample_id
