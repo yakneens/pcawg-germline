@@ -1,0 +1,19 @@
+{
+	"gnos": {
+		"ebi": {
+			"key_location": "/home/airflow/.ssh/sergei_pcawg_gnos_icgc.pem"
+		},
+		"osdc_icgc": {
+			"key_location": "/home/airflow/.ssh/sergei_pcawg_gnos_icgc.pem"
+		},
+		"osdc_tcga": {
+			"key_location": "/home/airflow/.ssh/sergei_bionimbus_gnos_may.pem"
+		}
+	},
+	"metadata_template_location": "/opt/pcawg-germline/workflows/gtupload-workflow/analysis_template.xml",
+	"submission_base_path": "/shared/data/results/freebayes_discovery_gnos_submission/",
+	"destination_repo_mapping": {
+		"ICGC": "ebi",
+		"TCGA": "osdc_tcga"
+	}
+}
