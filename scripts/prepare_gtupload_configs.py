@@ -73,7 +73,7 @@ def create_configs_command(args):
         
         if flag:
             flag = False
-        continue
+            continue
     
         if num_runs == None or num_configs < num_runs:
             sample_uuid = os.path.basename(root)
