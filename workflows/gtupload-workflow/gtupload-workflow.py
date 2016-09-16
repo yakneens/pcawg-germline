@@ -38,7 +38,7 @@ def prepare_sample_files_for_submission(sample_path_prefix, submission_base_path
         new_file_full_path = "{}/{}/{}".format(submission_base_path, new_submission_id, new_filename)
         copy_command = "cp {}/{} {}".format(sample_path_prefix,
                                             sample_file,
-                                            new_filename)
+                                            new_file_full_path)
         
         call_command(copy_command, "copy")
         
