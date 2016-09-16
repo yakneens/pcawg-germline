@@ -52,7 +52,7 @@ def prepare_submission_metadata_from_template(prepared_files, metadata_template_
                                               submitter_donor_id, icgc_or_tcga):
     analysis_template = ET.parse(metadata_template_location)
 
-    analysis_template.find("./ANALYSIS").set("analysis_date", datetime.datetime.now().strftime('%Y:%m:%dT%H:%M:%S'))
+    analysis_template.find("./ANALYSIS").set("analysis_date", datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%S'))
     seq_labels = analysis_template.findall("./ANALYSIS/ANALYSIS_TYPE/REFERENCE_ALIGNMENT/SEQ_LABELS/SEQUENCE")
     
     for label in seq_labels:
