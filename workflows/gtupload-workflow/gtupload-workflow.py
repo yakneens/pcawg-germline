@@ -21,7 +21,7 @@ import re
 from xml.etree.ElementTree import SubElement
 from subprocess import check_output
 
-def prepare_sample_files_for_submission(submission_base_path, sample_id, sample_files):
+def prepare_sample_files_for_submission(sample_path_prefix, submission_base_path, sample_id, sample_files):
     if (not os.path.isdir(submission_base_path)):
         logger.info(
             "Submission directory {} not present, creating.".format(submission_base_path))
@@ -99,7 +99,7 @@ def prepare_metadata(**kwargs):
     metadata_template_location = config["metadata_template_location"]
     submission_base_path = config["submission_base_path"]
     
-    prepared_files, new_submission_id = prepare_sample_files_for_submission(submission_base_path, sample_id, sample_files)
+    prepared_files, new_submission_id = prepare_sample_files_for_submission(sample_path_prefix, submission_base_path, sample_id, sample_files)
     
     submission_sample_location =  submission_base_path + "/" + new_submission_id
     
