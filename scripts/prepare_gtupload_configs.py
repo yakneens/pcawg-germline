@@ -67,7 +67,14 @@ def create_configs_command(args):
         os.makedirs(config_location)
 
     
+    flag = True
+    
     for root, dirs, files in os.walk(sample_location):
+        
+        if flag:
+            flag = False
+        continue
+    
         if num_runs == None or num_configs < num_runs:
             sample_uuid = os.path.basename(root)
             sample_data = sample_session.query(PCAWGSample.dcc_project_code.label("dcc_project_code"), PCAWGSample.submitter_donor_id.label("submitter_donor_id")).\
