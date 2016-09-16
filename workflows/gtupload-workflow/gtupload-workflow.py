@@ -52,7 +52,7 @@ def prepare_submission_metadata_from_template(prepared_files, metadata_template_
                                               submitter_donor_id, icgc_or_tcga):
     analysis_template = ET.parse(metadata_template_location)
 
-    analysis_template.find("./ANALYSIS")[0].set("analysis_date", str(datetime.datetime.now()))
+    analysis_template.find("./ANALYSIS").set("analysis_date", str(datetime.datetime.now()))
     seq_labels = analysis_template.findall("./ANALYSIS/ANALYSIS_TYPE/REFERENCE_ALIGNMENT/SEQ_LABELS/SEQUENCE")
     
     for label in seq_labels:
@@ -126,7 +126,9 @@ def submit_metadata(**kwargs):
     
     selected_repo = gnos[destination_repo_mapping[icgc_or_tcga]]
     
-    cgsubmit_command = "cgsubmit -u {} -s {} -c {}".format(submission_sample_location, selected_repo["url"], selected_repo["key_location"])
+    cgsubmit_command = "cgsubmit -u {} -s {} -c {}".format(submission_sample_location, 
+                                                           selected_repo["url"], 
+                                                           selected_repo["key_location"])
     call_command(cgsubmit_command, "cgsubmit")
 
 def upload_sample(**kwargs):
@@ -141,7 +143,8 @@ def upload_sample(**kwargs):
     
     selected_repo = gnos[destination_repo_mapping[icgc_or_tcga]]
     
-    gtupload_command = "gtupload {} -c {} -v".format(submission_sample_location + "/mainfest.xml", selected_repo["key_location"])
+    gtupload_command = "gtupload {} -c {} -v".format(submission_sample_location + "/mainfest.xml", 
+                                                     selected_repo["key_location"])
     call_command(gtupload_command, "gtupload")
     
 
