@@ -145,7 +145,7 @@ def upload_sample(**kwargs):
     
     gtupload_command = "/opt/gtupload/cghub/bin/gtupload {} -c {} -v".format(submission_sample_location + "/manifest.xml", 
                                                      selected_repo["key_location"])
-    call_command(gtupload_command, "gtupload", submission_sample_location)
+    call_command(gtupload_command, "gtupload", cwd=submission_sample_location)
     
 
    
