@@ -42,7 +42,7 @@ def prepare_sample_files_for_submission(sample_path_prefix, submission_base_path
         
         call_command(copy_command, "copy")
         logger.info(new_file_full_path)
-        md5 = check_output(["md5sum ", new_file_full_path]).split(" ")[0]
+        md5 = check_output(["md5sum", new_file_full_path]).split(" ")[0]
         new_files.append((new_filename, md5))
         
     return new_files, new_submission_id
