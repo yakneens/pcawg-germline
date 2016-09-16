@@ -47,7 +47,9 @@ def prepare_sample_files_for_submission(sample_path_prefix, submission_base_path
         
     return new_files, new_submission_id
 
-def prepare_submission_metadata_from_template(metadata_template_location, sample_id, submission_full_path, dcc_project_code, submitter_donor_id, icgc_or_tcga):
+def prepare_submission_metadata_from_template(prepared_files, metadata_template_location, 
+                                              sample_id, submission_full_path, dcc_project_code, 
+                                              submitter_donor_id, icgc_or_tcga):
     analysis_template = ET.parse(metadata_template_location)
 
     analysis_template.find("./ANALYSIS")[0].set("analysis_date", str(datetime.datetime.now()))
@@ -99,11 +101,15 @@ def prepare_metadata(**kwargs):
     metadata_template_location = config["metadata_template_location"]
     submission_base_path = config["submission_base_path"]
     
-    prepared_files, new_submission_id = prepare_sample_files_for_submission(sample_path_prefix, submission_base_path, sample_id, sample_files)
+    prepared_files, new_submission_id = prepare_sample_files_for_submission(sample_path_prefix, 
+                                                                            submission_base_path, 
+                                                                            sample_id, 
+                                                                            sample_files)
     
     submission_sample_location =  submission_base_path + "/" + new_submission_id
     
-    prepare_submission_metadata_from_template(metadata_template_location, sample_id, submission_sample_location, 
+    prepare_submission_metadata_from_template(prepared_files, metadata_template_location, 
+                                              sample_id, submission_sample_location, 
                                               dcc_project_code, submitter_donor_id, icgc_or_tcga)
     
     return submission_sample_location
@@ -139,46 +145,6 @@ def upload_sample(**kwargs):
     call_command(gtupload_command, "gtupload")
     
 
-
-def bcftools(**kwargs):
-
-    config = get_config(kwargs)
-    sample = get_sample(kwargs)
-
-    sample_id = sample["sample_id"]
-    sample_path_prefix = sample["path_prefix"]
-    
-    filenames_list = sample["filename_list"]
-    full_path_filenames_list = map(lambda(x): sample_path_prefix + "/" + x, filenames_list)
-    filenames_string = " ".join(full_path_filenames_list)
-    
-    
-    result_path_prefix = config["results_local_path"] + "/" + sample_id
-    
-    bcftools_path = config["bcftools"]["path"]
-    bcftools_flags = config["bcftools"]["flags"]
-    bcftools_operation = config["bcftools"]["operation"]
-    
-    
-    if (not os.path.isdir(result_path_prefix)):
-        logger.info(
-            "Results directory {} not present, creating.".format(result_path_prefix))
-        os.makedirs(result_path_prefix)
-
-    result_filename = "{}/{}_merged.vcf.gz".format(
-        result_path_prefix, sample_id)
-
-    bcftools_command = 'bcftools {} {} {} -o {}'.\
-        format(bcftools_operation,
-               bcftools_flags,
-               filenames_string,
-               result_filename)
-    
-
-    call_command(bcftools_command, "bcftools")
-
-    generate_tabix(result_filename, config)
-    copy_result(result_filename, sample_id, config)
    
 default_args = {
     'owner': 'airflow',
