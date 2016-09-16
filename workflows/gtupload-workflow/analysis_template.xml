@@ -129,8 +129,6 @@
 	  </TARGETS>
       <DATA_BLOCK name="">
         <FILES>
-          <FILE filename="" filetype="vcf" checksum_method="MD5" checksum=""/>
-          <FILE filename="" filetype="idx" checksum_method="MD5" checksum=""/>
         </FILES>
       </DATA_BLOCK>
       <ANALYSIS_ATTRIBUTES>
