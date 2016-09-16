@@ -143,7 +143,7 @@ def upload_sample(**kwargs):
     
     selected_repo = gnos[destination_repo_mapping[icgc_or_tcga]]
     
-    gtupload_command = "gtupload {} -c {} -v".format(submission_sample_location + "/mainfest.xml", 
+    gtupload_command = "gtupload {} -c {} -v".format(submission_sample_location + "/manifest.xml", 
                                                      selected_repo["key_location"])
     call_command(gtupload_command, "gtupload")
     
