@@ -58,7 +58,7 @@ def create_configs_command(args):
                 
     sample_session = Session(sample_engine)
     
-    sample_id = PCAWGSample.normal_wgs_aliquot_id
+    sample_id = PCAWGSample.normal_wgs_algnment_gnos_id
     
     
             
