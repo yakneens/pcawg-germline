@@ -35,7 +35,7 @@ def prepare_sample_files_for_submission(submission_base_path, sample_id, sample_
     for sample_file in sample_files:
         ext = sample_file[sample_file.find("."):]
         new_filename = "{}.butler-freebayes-1-0-0.{}.germline.snv{}".format(sample_id, datetime.datetime.now().strftime('%Y%m%d'), ext)
-        new_file_full_path = "{}/{}/{}".format(submission_base_path, new_submission_id)
+        new_file_full_path = "{}/{}/{}".format(submission_base_path, new_submission_id, new_filename)
         copy_command = "cp {}/{} {}".format(sample_path_prefix,
                                             sample_file,
                                             new_filename)
