@@ -63,6 +63,7 @@ def prepare_submission_metadata_from_template(prepared_files, metadata_template_
         label.set("data_block_name", sample_id)
         
     analysis_template.find("./ANALYSIS/TARGETS/TARGET").set("refname", sample_id)
+    analysis_template.find("./ANALYSIS/TARGETS/TARGET").set("refcenter", icgc_or_tcga)
     
     analysis_template.find("./ANALYSIS/DATA_BLOCK").set("name", sample_id)
     
