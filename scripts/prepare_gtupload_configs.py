@@ -81,7 +81,7 @@ def create_configs_command(args):
                             filter(sample_id == sample_uuid).\
                             first()
             icgc_or_tcga = "ICGC"
-            if (re.search("_US$", sample_data.dcc_project_code)):
+            if (re.search("-US$", sample_data.dcc_project_code)):
                 icgc_or_tcga = "TCGA"
                                
                             
