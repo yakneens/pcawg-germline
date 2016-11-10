@@ -1,5 +1,7 @@
 library(VariantAnnotation)
 library(data.table)
+library(devtools)
+devtools::load_all(pkg="~/Documents/workspace/pcawg-germline/analyses/deletion-mutation-density/pcawg.common")
 library(pcawg.common)
 library(GenomicFeatures)
 library(TxDb.Hsapiens.UCSC.hg19.knownGene)
@@ -12,18 +14,18 @@ library(ggplot2)
 library(ggrepel)
 library(ggbio)
 library(BSgenome.Hsapiens.1000genomes.hs37d5)
-library(data.table)
+
 library(icd)
 
 #Read in metadata
 sample_meta = get_pcawg_metadata("~/Downloads/pcawg_data/sample_metadata/pcawg_summary.tsv", 
-                                 "~/Downloads/pcawg_data/sample_metadata/PCAWG Blacklisted Donors - Blacklist_donors_2016_06_28.tsv", split_multi_tumors = F)
+                                 "~/Downloads/pcawg_data/sample_metadata/PCAWG Excluded Donors%2FSamples - Excluded_donors_2016_08_30.tsv", split_multi_tumors = F)
 
 sample_meta = keep_first_of_multi_tumors(sample_meta)
 
-clinical_meta = get_clinical_metadata("~/Downloads/pcawg_data/clinical_metadata/pcawg_donor_clinical_May2016_v2.tsv", sample_meta)
+clinical_meta = get_clinical_metadata("~/Downloads/pcawg_data/clinical_metadata/pcawg_donor_clinical_August2016_v6.tsv", sample_meta)
 
-hist_meta = get_histology_metadata("~/Downloads/pcawg_data/clinical_metadata/pcawg_specimen_histology_May2016_v2.tsv", sample_meta)
+hist_meta = get_histology_metadata("~/Downloads/pcawg_data/clinical_metadata/pcawg_specimen_histology_August2016_v6.tsv", sample_meta)
 
 sample_column_list = c("donor_unique_id", "normal_wgs_aliquot_id", 
                        "tumor_wgs_aliquot_id", "dcc_project_code")
@@ -189,7 +191,9 @@ rm(donor_counts, donor_wilcox_pvals, donor_ttest_pvals, donor_cors)
 d_vs_f_donor_population_test = wilcox.test(results_by_donor$dels, results_by_donor$flanks, paired = T, conf.int = T)
 
 filtered_results_by_donor = results_by_donor[which(is.finite(mean_ratios) & donor_diagnosis_icd10 != "")]
-donor_count_model = glm(data=filtered_results_by_donor, formula=dels ~ donor_diagnosis_icd10 + tumour_stage + tumour_histological_code + flanks + level_of_cellularity + tumour_grade + dcc_project_code + snv_counts)
+
+donor_count_model = glm(data=filtered_results_by_donor, formula=dels ~ donor_diagnosis_icd10 + tumour_stage + tumour_histological_code + flanks + level_of_cellularity + tumour_grade + dcc_project_code + snv_counts, family="poisson")
+
 anova(donor_count_model, test="Chisq")
 
 

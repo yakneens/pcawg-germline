@@ -119,8 +119,8 @@ get_clinical_metadata <- function(file_location, sample_metadata){
   clinical_metadata[clinical_metadata$donor_sex == "" & !is.na(clinical_metadata$donor_sex),]$donor_sex = NA
   clinical_metadata$donor_unique_id = sample_metadata$donor_unique_id
   
-  to_remap = cbind(c("25", "25.1", "25.0", "25.2", "25.0/25.9", "25.7", "25.1/25.2", "c92.0", "C92.00", "C26.8"), c("C25", "C25.1", "C25.0", "C25.2", "C25.0", "C25.7", "C25.1", "C92.0", "C92.0", "C26.9"))
-  apply(to_remap, 1, function(x) clinical_metadata[which(clinical_metadata$donor_diagnosis_icd10 == x[1]),]$donor_diagnosis_icd10 = x[2])
+  #to_remap = cbind(c("25", "25.1", "25.0", "25.2", "25.0/25.9", "25.7", "25.1/25.2", "c92.0", "C92.00", "C26.8"), c("C25", "C25.1", "C25.0", "C25.2", "C25.0", "C25.7", "C25.1", "C92.0", "C92.0", "C26.9"))
+#  apply(to_remap, 1, function(x) clinical_metadata[which(clinical_metadata$donor_diagnosis_icd10 == x[1]),]$donor_diagnosis_icd10 = x[2])
   
   
   return(clinical_metadata)
