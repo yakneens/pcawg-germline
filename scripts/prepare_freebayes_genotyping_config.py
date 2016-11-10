@@ -60,7 +60,7 @@ def get_available_samples(analysis_id, tissue_type, num_runs):
     current_runs = run_session.query(Configuration.config[("sample"," sample_id")].astext).\
         join(AnalysisRun, AnalysisRun.config_id == Configuration.config_id).\
         join(Analysis, Analysis.analysis_id == AnalysisRun.analysis_id).\
-        filter(and_(Analysis.analysis_id == analysis_id, AnalysisRun.run_status != 4)).all()
+        filter(and_(Analysis.analysis_id == analysis_id, AnalysisRun.run_status != tracker.model.analysis_run.RUN_STATUS_ERROR)).all()
         
     available_samples = sample_session.query(PCAWGSample.index.label("index"), sample_id.label("sample_id"), sample_location.label("sample_location")).\
         join(SampleLocation, PCAWGSample.index == SampleLocation.donor_index).\
