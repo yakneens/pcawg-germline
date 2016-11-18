@@ -40,14 +40,14 @@ hist_column_list = c("organ_system", "histology_abbreviation",
                      "tumour_histological_code", "tumour_histological_type",
                      "tumour_stage", "tumour_grade",
                      "percentage_cellularity", "level_of_cellularity")
-donor_meta = cbind(sample_meta[,sample_column_list], 
+donor_meta = data.table(cbind(sample_meta[,sample_column_list], 
                    clinical_meta[,clinical_column_list], 
-                   hist_meta[,hist_column_list])
+                   hist_meta[,hist_column_list]))
 
 rm(sample_meta, sample_column_list, clinical_meta, clinical_column_list, hist_meta, hist_column_list)
 
 #Load germline deletions data
-load("~/Downloads/pcawg_data/germline_deletions/dels.Rdata")
+load("~/Downloads/pcawg_data/dels.Rdata")
 #load("~/Downloads/pcawg_data/germline_deletions/dels_chr22.Rdata")
 
 set_deletion_range_ends(deletions)
@@ -57,6 +57,8 @@ deletion_genotypes = geno(deletions)$GT[,match(donor_meta$normal_wgs_aliquot_id,
 
 #Load somatic SNV data
 load("~/Downloads/pcawg_data/snv_samples.Rdata")
+#load("~/Downloads/pcawg_data/snv_sample_ranges.Rdata")
+#snv_samples = snv_ranges
 #load("~/Downloads/pcawg_data/snv_samples_chr22.Rdata")
 
 snv_samples = snv_samples[match(donor_meta$tumor_wgs_aliquot_id, names(snv_samples))]
