@@ -13,6 +13,7 @@ get_binned_densities <- function(deletion_filter, snv_filter){
   if(!is.null(snv_filter)){
     filtered_snv_ranges = snv_ranges[-snv_filter]
     filtered_snv_counts = snv_counts[-snv_filter]
+    filtered_deletion_carrier_mask = filtered_deletion_carrier_mask[,-snv_filter]
   }else{
     filtered_snv_ranges = snv_ranges
     filtered_snv_counts = snv_counts

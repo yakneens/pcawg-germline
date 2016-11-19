@@ -1,9 +1,10 @@
 library(VariantAnnotation)
 library(data.table)
 library(devtools)
+library(GenomicFeatures)
 devtools::load_all(pkg="~/Documents/workspace/pcawg-germline/analyses/deletion-mutation-density/pcawg.common")
 library(pcawg.common)
-library(GenomicFeatures)
+
 library(ggplot2)
 
 source("~/Documents/workspace/pcawg-germline/analyses/deletion-mutation-density/get_binned_densities.R")
@@ -79,11 +80,11 @@ snv_filter = NULL
 #deletion_filter = which(del_widths < 10000 | del_widths > 100000)
 #deletion_filter = which(del_widths < 1000 | del_widths > 10000)
 #deletion_filter = which(del_widths > 1000)
-deletion_filter = which(seqnames(deletion_ranges) != "15")
+deletion_filter = which(seqnames(deletion_ranges) != "8")
 #deletion_filter = which(del_widths < 100000)
 
 
-raw_densities = get_binned_densities(deletion_filter, snv_filter)
+raw_densities = get_binned_densities(deletion_filter, NULL)
 del_bins = data.table(seq(1,30), rowSums(raw_densities))
 setnames(del_bins, c("index", "bins"))
 
@@ -96,3 +97,21 @@ max_density = max(del_bins2$bins)
 
 ggplot(del_bins2, aes(x=index, y=bins)) + geom_bar(stat="identity", fill="grey70") + geom_vline(xintercept=10.5, linetype="dashed") + geom_vline(xintercept=20.5, linetype="dashed") + xlab("Bin") + ylab("SNV Density") + annotate("text", x=5, y=1.1*max_density, label="Left Flank") + annotate("text", x=15, y=1.1*max_density, label="Deletion") + annotate("text", x=25, y=1.1*max_density, label="Right Flank")
 
+
+bins_by_cancer_project <- function(){
+  dir.create(path="~/Downloads/pcawg_data/del_density/by_project")
+  project_codes = unique(donor_meta[,dcc_project_code])
+  deletion_filter = NULL
+  
+  sapply(project_codes, 
+         function(x){print(x);get_binned_densities(NULL, which(donor_meta$dcc_project_code != x))},
+         simplify = F,
+         USE.NAMES = T)
+  
+}
+
+project_based_bins = bins_by_cancer_project()
+
+bins_by_snv_type <- function(){
+  
+}

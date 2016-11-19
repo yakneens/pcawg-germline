@@ -1,0 +1,5 @@
+{
+	"rsync": {
+		"flags": "-a -v --remove-source-files"
+	}
+}
