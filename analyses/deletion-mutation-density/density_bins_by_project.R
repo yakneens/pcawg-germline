@@ -3,7 +3,7 @@
 library(VariantAnnotation)
 library(data.table)
 library(GenomicFeatures)
-
+library(progress)
 
 'usage: density_bins_by_project.R -p <x> -m <y> -d <z> -v <w> -c <q> -r <u>
 
