@@ -5,15 +5,15 @@ library(data.table)
 library(GenomicFeatures)
 
 
-'usage: density_bins_by_project.R [-p -m -d -v -c -r]
+'usage: density_bins_by_project.R -p <x> -m <y> -d <z> -v <w> -c <q> -r <u>
 
 options:
- -p Project Name
- -m Donor Meta Path
- -d Deletion Ranges Path
- -v SNV Ranges Path
- -c Carrier Mask Path
- -r Result Path' -> doc
+ -p <x> Project Name
+ -m <y> Donor Meta Path
+ -d <z> Deletion Ranges Path
+ -v <w> SNV Ranges Path
+ -c <q> Carrier Mask Path
+ -r <u> Result Path' -> doc
 library(docopt)
 
 opts = docopt(doc)
