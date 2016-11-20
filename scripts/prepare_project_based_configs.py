@@ -60,7 +60,7 @@ def generate_config_objects(project_names, config_location):
     
         
         this_config_data = {"r_param": {
-                                "-p": project_name,
+                                "-p": project_name[0],
                                 }
                             }
         
