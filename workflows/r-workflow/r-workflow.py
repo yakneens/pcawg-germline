@@ -14,43 +14,22 @@ from tracker.util.workflow_common import *
 
 
 def run_R(**kwargs):
-    "results_base_path": "/shared/data/results/r_density_bins_by_project/",
-    "results_local_path": "/tmp/r_density_bins_by_project/",
-    "donor_meta_path": "/shared/data/density_bins_input/donor_meta.RData",
-    "deletion_ranges_path": "/shared/data/density_bins_input/deletion_ranges.RData",
-    "snv_ranges_path": "/shared/data/density_bins_input/snv_ranges.RData",
-    "deletion_carrier_mask_path": "shared/data/density_bins_input/deletion_carrier_mask.RData"
-
     config = get_config(kwargs)
     
+    r_script = config["r_script"]
+    r_param = config["r_param"]
+    r_param_string = ""
     
-    
-    result_path = config["results_local_path"]
-    results_base_path = config["results_base_path"]
-    donor_meta_path = config["donor_meta_path"]
-    deletion_ranges_path = config["deletion_ranges_path"]
-    snv_ranges_path = config["snv_ranges_path"]
-    deletion_carrier_mask_path = config["deletion_carrier_mask_path"]
+    for param_key in r_param:
+        r_param_string += " " + param_key + " " + r_param[param_key]
     
     
     
-    if (not os.path.isdir(result_path)):
-        logger.info(
-            "Results directory {} not present, creating.".format(result_path))
-        os.makedirs(result_path_prefix)
-
-    
-    bcftools_command = 'bcftools {} {} {} -o {}'.\
-        format(bcftools_operation,
-               bcftools_flags,
-               filenames_string,
-               result_filename)
+    r_command = r_script + r_param_string
     
 
-    call_command(bcftools_command, "bcftools")
+    call_command(r_command, "R")
 
-    generate_tabix(result_filename, config)
-    copy_result(result_filename, sample_id, config)
    
 default_args = {
     'owner': 'airflow',
