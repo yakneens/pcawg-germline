@@ -31,11 +31,12 @@ load(carrier_mask_path)
 
 
 get_binned_densities <- function(deletion_filter, snv_filter){
-snv_counts = unlist(lapply(snv_ranges, length))
+  snv_counts = unlist(lapply(snv_ranges, length))
+  filtered_deletion_carrier_mask = deletion_carrier_mask
   
   if(!is.null(deletion_filter)){
     filtered_deletion_ranges = deletion_ranges[-deletion_filter]
-    filtered_deletion_carrier_mask = deletion_carrier_mask[-deletion_filter,]
+    filtered_deletion_carrier_mask = filtered_deletion_carrier_mask[-deletion_filter,]
   }else{
     filtered_deletion_ranges = deletion_ranges
     filtered_deletion_carrier_mask = deletion_carrier_mask
