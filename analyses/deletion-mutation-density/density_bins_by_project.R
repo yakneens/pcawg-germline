@@ -69,7 +69,7 @@ get_binned_densities <- function(deletion_filter, snv_filter){
   
 }
 
-var_name = paste("density_bins_", project_name)
+var_name = paste("density_bins_", project_name, sep="")
 assign(var_name, get_binned_densities(NULL, which(donor_meta$dcc_project_code != project_name)))
-save(list=c(var_name), file=paste(result_path, "/", var_name, ".RData"))
+save(list=c(var_name), file=paste(result_path, "/", var_name, ".RData", sep=""))
 
