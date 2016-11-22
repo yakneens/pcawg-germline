@@ -21,7 +21,7 @@ def run_R(**kwargs):
     r_param_string = ""
     
     for param_key in r_param:
-        r_param_string += " " + param_key + " " + r_param[param_key]
+        r_param_string += " " + param_key + " " + str(r_param[param_key])
     
     
     
