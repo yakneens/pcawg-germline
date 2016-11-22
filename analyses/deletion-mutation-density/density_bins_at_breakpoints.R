@@ -47,7 +47,7 @@ deletion_filter = which(deletion_info$IMPRECISE == T | as.character(seqnames(del
 snv_filter = NULL
 
 filtered_deletion_carrier_mask = deletion_carrier_mask
-
+snv_counts = unlist(lapply(snv_ranges, length))
 if(!is.null(deletion_filter)){
   filtered_deletion_ranges = deletion_ranges[-deletion_filter]
   filtered_deletion_carrier_mask = deletion_carrier_mask[-deletion_filter,]
