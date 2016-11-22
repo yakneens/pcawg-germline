@@ -31,11 +31,11 @@ snv_ranges_path = opts$v
 carrier_mask_path = opts$c
 result_path = opts$r
 
-donor_meta_path = "~/Downloads/pcawg_data/del_density/by_project/donor_meta.RData"
-deletion_ranges_path = "~/Downloads/pcawg_data/del_density/by_project/deletion_ranges.RData"
-deletion_info_path = "~/Downloads/pcawg_data/del_density/by_project/deletion_info.RData"
-snv_ranges_path = "~/Downloads/pcawg_data/del_density/by_project/snv_ranges.RData"
-carrier_mask_path = "~/Downloads/pcawg_data/del_density/by_project/deletion_carrier_mask.RData"
+#donor_meta_path = "~/Downloads/pcawg_data/del_density/by_project/donor_meta.RData"
+#deletion_ranges_path = "~/Downloads/pcawg_data/del_density/by_project/deletion_ranges.RData"
+#deletion_info_path = "~/Downloads/pcawg_data/del_density/by_project/deletion_info.RData"
+#snv_ranges_path = "~/Downloads/pcawg_data/del_density/by_project/snv_ranges.RData"
+#carrier_mask_path = "~/Downloads/pcawg_data/del_density/by_project/deletion_carrier_mask.RData"
 
 load(donor_meta_path)
 load(deletion_ranges_path)
