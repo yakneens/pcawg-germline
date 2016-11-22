@@ -5,10 +5,10 @@ library(data.table)
 library(GenomicFeatures)
 library(progress)
 
-'usage: density_bins_at_breakpoints.R -h <x> -b <l> -n <a> -m <y> -d <z> -i <j> -v <w> -c <q> -r <u>
+'usage: density_bins_at_breakpoints.R -o <x> -b <l> -n <a> -m <y> -d <z> -i <j> -v <w> -c <q> -r <u>
 
 options:
- -h <x> Chromosome
+ -o <x> Chromosome
  -b <l> Bin Width
  -n <a> Number of Bins
  -m <y> Donor Meta Path
@@ -17,6 +17,7 @@ options:
  -v <w> SNV Ranges Path
  -c <q> Carrier Mask Path
  -r <u> Result Path' -> doc
+
 library(docopt)
 
 opts = docopt(doc)

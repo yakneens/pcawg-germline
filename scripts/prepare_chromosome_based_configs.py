@@ -31,7 +31,7 @@ def generate_config_objects(chromosome_names, config_location):
     
         
         this_config_data = {"r_param": {
-                                "-h": chromosome_name,
+                                "-o": chromosome_name,
                                 }
                             }
         
