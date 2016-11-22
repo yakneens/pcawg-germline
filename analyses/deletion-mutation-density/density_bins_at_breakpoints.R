@@ -48,6 +48,7 @@ snv_filter = NULL
 
 filtered_deletion_carrier_mask = deletion_carrier_mask
 snv_counts = unlist(lapply(snv_ranges, length))
+filtered_snv_counts = snv_counts
 if(!is.null(deletion_filter)){
   filtered_deletion_ranges = deletion_ranges[-deletion_filter]
   filtered_deletion_carrier_mask = deletion_carrier_mask[-deletion_filter,]
