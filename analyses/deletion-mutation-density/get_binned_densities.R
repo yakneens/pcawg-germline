@@ -1,11 +1,11 @@
 get_binned_densities <- function(deletion_filter, snv_filter){
   
   if(!is.null(deletion_filter)){
-    filtered_deletion_ranges = rowRanges(deletions)[-deletion_filter]
+    filtered_deletion_ranges = deletion_ranges[-deletion_filter]
     filtered_deletion_genotypes = deletion_genotypes[-deletion_filter,]
     filtered_deletion_carrier_mask = deletion_carrier_mask[-deletion_filter,]
   }else{
-    filtered_deletion_ranges = rowRanges(deletions)
+    filtered_deletion_ranges = deletion_ranges
     filtered_deletion_genotypes = deletion_genotypes
     filtered_deletion_carrier_mask = deletion_carrier_mask
   }
