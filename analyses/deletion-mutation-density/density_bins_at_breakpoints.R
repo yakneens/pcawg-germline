@@ -21,7 +21,7 @@ options:
 library(docopt)
 
 opts = docopt(doc)
-selected_chrom = opts$h
+selected_chrom = opts$o
 bin_width = as.integer(opts$b)
 num_bins = as.integer(opts$n)
 donor_meta_path = opts$m
@@ -30,6 +30,12 @@ deletion_info_path = opts$i
 snv_ranges_path = opts$v
 carrier_mask_path = opts$c
 result_path = opts$r
+
+donor_meta_path = "~/Downloads/pcawg_data/del_density/by_project/donor_meta.RData"
+deletion_ranges_path = "~/Downloads/pcawg_data/del_density/by_project/deletion_ranges.RData"
+deletion_info_path = "~/Downloads/pcawg_data/del_density/by_project/deletion_info.RData"
+snv_ranges_path = "~/Downloads/pcawg_data/del_density/by_project/snv_ranges.RData"
+carrier_mask_path = "~/Downloads/pcawg_data/del_density/by_project/deletion_carrier_mask.RData"
 
 load(donor_meta_path)
 load(deletion_ranges_path)
@@ -41,7 +47,7 @@ load(carrier_mask_path)
 #selected_chrom = "20"
 #bin_width = 100
 # Number of bins to each side of breakpoint
-#num_bins = 11
+#num_bins = 31
 
 deletion_filter = which(deletion_info$IMPRECISE == T | as.character(seqnames(deletion_ranges)) != selected_chrom)
 snv_filter = NULL
