@@ -55,6 +55,7 @@ snv_filter = NULL
 filtered_deletion_carrier_mask = deletion_carrier_mask
 snv_counts = unlist(lapply(snv_ranges, length))
 filtered_snv_counts = snv_counts
+
 if(!is.null(deletion_filter)){
   filtered_deletion_ranges = deletion_ranges[-deletion_filter]
   filtered_deletion_carrier_mask = deletion_carrier_mask[-deletion_filter,]
@@ -72,7 +73,8 @@ if(!is.null(snv_filter)){
   filtered_snv_counts = snv_counts
 }
 
-breakpoints = c(IRanges(start(filtered_deletion_ranges), width=1), IRanges(end(filtered_deletion_ranges), width=1))
+breakpoints = c(GRanges(IRanges(start(filtered_deletion_ranges), width=1), seqnames = as.integer(selected_chrom)), 
+                GRanges(IRanges(end(filtered_deletion_ranges), width=1), seqnames = as.integer(selected_chrom)))
 
 breakpoint_bins = flank(breakpoints, bin_width * num_bins, both=T)
 
@@ -81,7 +83,7 @@ all_tiles = tile(breakpoint_bins, n=num_bins)
 hits = which(filtered_deletion_carrier_mask[,] > 0, arr.ind = T)
 pb = progress_bar$new(format=":current/:total [:bar] :percent :elapsed :eta",total = dim(hits)[1])
 
-binned_densities = apply(hits, 1, function(x){pb$tick(); countOverlaps(all_tiles[[x[1]]], ranges(filtered_snv_ranges[[x[2]]])) / filtered_snv_counts[x[2]];})
+binned_densities = apply(hits, 1, function(x){pb$tick(); countOverlaps(all_tiles[[x[1]]], filtered_snv_ranges[[x[2]]]) / filtered_snv_counts[x[2]];})
 
 var_name = paste("breakpoint_density_bins_chrom_", selected_chrom, "_width_", bin_width, "_num_", num_bins, sep="")
 assign(var_name, binned_densities)
