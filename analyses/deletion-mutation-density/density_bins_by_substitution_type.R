@@ -1,18 +1,18 @@
 #!/usr/bin/env Rscript
 
-'usage: density_bins_at_breakpoints.R -o <o> -s<s> -b <b> -n <n> -m <m> -d <d> -i <i> -v <v> -c <c> -r <r>
+'usage: density_bins_at_breakpoints.R -o <a> -s <e> -b <f> -n <g> -m <h> -d <j> -i <k> -v <l> -c <p> -r <q>
 
 options:
--o <o> Chromosome
--s <s> Sub Type
--b <b> Bin Width
--n <n> Number of Bins
--m <m> Donor Meta Path
--d <d> Deletion Ranges Path
--i <i> Deletion Info Path
--v <v> SNV Ranges Path
--c <c> Carrier Mask Path
--r <r> Result Path' -> doc
+-o <a> Chromosome
+-s <e> Sub Type
+-b <f> Bin Width
+-n <g> Number of Bins
+-m <h> Donor Meta Path
+-d <j> Deletion Ranges Path
+-i <k> Deletion Info Path
+-v <l> SNV Ranges Path
+-c <p> Carrier Mask Path
+-r <q> Result Path' -> doc
 
 library(docopt)
 
