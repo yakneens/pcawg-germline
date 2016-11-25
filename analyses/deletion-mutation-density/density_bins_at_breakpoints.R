@@ -49,7 +49,15 @@ load(carrier_mask_path)
 # Number of bins to each side of breakpoint
 #num_bins = 31
 
-deletion_filter = which(deletion_info$IMPRECISE == T | as.character(seqnames(deletion_ranges)) != selected_chrom)
+del_widths = width(deletion_ranges)
+
+breakpoint_margin = 200
+bin_based_del_size_cutoff = (bin_width * num_bins) / 2 + breakpoint_margin
+print(paste("Deletion size cutoff:", bin_based_del_size_cutoff))
+
+
+deletion_filter = which(deletion_info$IMPRECISE == T | as.character(seqnames(deletion_ranges)) != selected_chrom | del_widths < bins_based_del_size_cutoff)
+
 snv_filter = NULL
 
 filtered_deletion_carrier_mask = deletion_carrier_mask
@@ -73,18 +81,27 @@ if(!is.null(snv_filter)){
   filtered_snv_counts = snv_counts
 }
 
-breakpoints = c(GRanges(IRanges(start(filtered_deletion_ranges), width=1), seqnames = as.integer(selected_chrom)), 
-                GRanges(IRanges(end(filtered_deletion_ranges), width=1), seqnames = as.integer(selected_chrom)))
+print(paste(length(filtered_deletion_ranges), "our of", legth(deletion_ranges), "deletions left after filtration"))
+print(paste(length(filtered_snv_ranges), "our of", legth(snv_ranges), "samples left after filtration"))
+      
+start_breakpoints = GRanges(IRanges(start(filtered_deletion_ranges), width=1), seqnames = as.integer(selected_chrom))
+start_breakpoint_bins = flank(start_breakpoints, bin_width * num_bins, both=T)
+start_tiles = tile(start_breakpoint_bins, n=num_bins)
 
-breakpoint_bins = flank(breakpoints, bin_width * num_bins, both=T)
-
-all_tiles = tile(breakpoint_bins, n=num_bins)
+end_breakpoints = GRanges(IRanges(end(filtered_deletion_ranges), width=1), seqnames = as.integer(selected_chrom))
+end_breakpoint_bins = flank(end_breakpoints, bin_width * num_bins, both=T)
+end_tiles = tile(end_breakpoint_bins, n=num_bins)
 
 hits = which(filtered_deletion_carrier_mask[,] > 0, arr.ind = T)
 pb = progress_bar$new(format=":current/:total [:bar] :percent :elapsed :eta",total = dim(hits)[1])
 
-binned_densities = apply(hits, 1, function(x){pb$tick(); countOverlaps(all_tiles[[x[1]]], filtered_snv_ranges[[x[2]]]) / filtered_snv_counts[x[2]];})
+start_binned_densities = apply(hits, 1, function(x){pb$tick(); countOverlaps(start_tiles[[x[1]]], filtered_snv_ranges[[x[2]]]) / filtered_snv_counts[x[2]];})
+end_binned_densities = apply(hits, 1, function(x){pb$tick(); countOverlaps(end_tiles[[x[1]]], filtered_snv_ranges[[x[2]]]) / filtered_snv_counts[x[2]];})
 
-var_name = paste("breakpoint_density_bins_chrom_", selected_chrom, "_width_", bin_width, "_num_", num_bins, sep="")
-assign(var_name, binned_densities)
-save(list=c(var_name), file=paste(result_path, "/", var_name, ".RData", sep=""))
+start_var_name = paste("start_breakpoint_density_bins_chrom_", selected_chrom, "_width_", bin_width, "_num_", num_bins, sep="")
+assign(start_var_name, start_binned_densities)
+save(list=c(start_var_name), file=paste(result_path, "/", start_var_name, ".RData", sep=""))
+
+end_var_name = paste("end_breakpoint_density_bins_chrom_", selected_chrom, "_width_", bin_width, "_num_", num_bins, sep="")
+assign(end_var_name, end_binned_densities)
+save(list=c(end_var_name), file=paste(result_path, "/", end_var_name, ".RData", sep=""))
