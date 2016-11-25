@@ -81,8 +81,8 @@ if(!is.null(snv_filter)){
   filtered_snv_counts = snv_counts
 }
 
-print(paste(length(filtered_deletion_ranges), "our of", legth(deletion_ranges), "deletions left after filtration"))
-print(paste(length(filtered_snv_ranges), "our of", legth(snv_ranges), "samples left after filtration"))
+print(paste(length(filtered_deletion_ranges), "our of", length(deletion_ranges), "deletions left after filtration"))
+print(paste(length(filtered_snv_ranges), "our of", length(snv_ranges), "samples left after filtration"))
       
 start_breakpoints = GRanges(IRanges(start(filtered_deletion_ranges), width=1), seqnames = as.integer(selected_chrom))
 start_breakpoint_bins = flank(start_breakpoints, bin_width * num_bins, both=T)
