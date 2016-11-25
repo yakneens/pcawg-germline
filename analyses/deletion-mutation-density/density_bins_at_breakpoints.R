@@ -56,7 +56,7 @@ bin_based_del_size_cutoff = (bin_width * num_bins) / 2 + breakpoint_margin
 print(paste("Deletion size cutoff:", bin_based_del_size_cutoff))
 
 
-deletion_filter = which(deletion_info$IMPRECISE == T | as.character(seqnames(deletion_ranges)) != selected_chrom | del_widths < bin_based_del_size_cutoff)
+deletion_filter = which(as.character(seqnames(deletion_ranges)) != selected_chrom | del_widths < bin_based_del_size_cutoff)
 
 snv_filter = NULL
 
@@ -96,7 +96,7 @@ hits = which(filtered_deletion_carrier_mask[,] > 0, arr.ind = T)
 pb = progress_bar$new(format=":current/:total [:bar] :percent :elapsed :eta",total = dim(hits)[1])
 
 start_binned_densities = apply(hits, 1, function(x){pb$tick(); countOverlaps(start_tiles[[x[1]]], filtered_snv_ranges[[x[2]]]) / filtered_snv_counts[x[2]];})
-end_binned_densities = apply(hits, 1, function(x){pb$tick(); countOverlaps(end_tiles[[x[1]]], filtered_snv_ranges[[x[2]]]) / filtered_snv_counts[x[2]];})
+end_binned_densities = apply(hits, 1, function(x){countOverlaps(end_tiles[[x[1]]], filtered_snv_ranges[[x[2]]]) / filtered_snv_counts[x[2]];})
 
 start_var_name = paste("start_breakpoint_density_bins_chrom_", selected_chrom, "_width_", bin_width, "_num_", num_bins, sep="")
 assign(start_var_name, start_binned_densities)
