@@ -61,17 +61,16 @@ missing_sample_indices = c(which(is.na(colnames(deletion_genotypes))),
 donor_meta = donor_meta[-missing_sample_indices,]
 deletion_genotypes = deletion_genotypes[,-missing_sample_indices]
 snv_samples = snv_samples[-missing_sample_indices]
-
 colnames(deletion_genotypes) = donor_meta$donor_unique_id
 names(snv_samples) = donor_meta$donor_unique_id
 
 #Compute matrix with 1 for heterozygous carriers of a deletion, 0 for non-carriers (hom ref), and NA for others
 deletion_carrier_mask = get_het_carrier_mask(deletion_genotypes)
 
-del_widths = width(deletion_ranges)
 deletion_ranges = rowRanges(deletions)
+del_widths = width(deletion_ranges)
 snv_ranges = lapply(snv_samples, rowRanges)
-snv_counts = unlist(lapply(snv_samples, length))
+snv_counts = unlist(lapply(snv_ranges, length))
 
 rm(snv_samples)
 
