@@ -93,8 +93,11 @@ all_tiles = pc(pre_deletion_tiles, deletion_tiles, post_deletion_tiles)
 hits = which(filtered_deletion_carrier_mask[,] > 0, arr.ind = T)
 
 #Filter out samples that don't have any variants left after filtering
-hits = hits[-which(hits[,2] %in% which(lapply(filtered_snv_ranges, length) == 0)),]
+empty_samples = which(lapply(filtered_snv_ranges, length) == 0)
 
+if(length(empty_samples) > 0){
+  hits = hits[-which(hits[,2] %in% empty_samples),]
+}
 pb = progress_bar$new(format=":current/:total [:bar] :percent :elapsed :eta",total = dim(hits)[1])
 
 binned_densities[[selected_chrom]] = apply(hits, 1, function(x){pb$tick(); countOverlaps(all_tiles[[x[1]]], filtered_snv_ranges[[x[2]]]) / filtered_snv_counts[x[2]];})
