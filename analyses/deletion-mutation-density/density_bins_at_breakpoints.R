@@ -56,7 +56,7 @@ bin_based_del_size_cutoff = (bin_width * num_bins) / 2 + breakpoint_margin
 print(paste("Deletion size cutoff:", bin_based_del_size_cutoff))
 
 
-deletion_filter = which(deletion_info$IMPRECISE == T | as.character(seqnames(deletion_ranges)) != selected_chrom | del_widths < bins_based_del_size_cutoff)
+deletion_filter = which(deletion_info$IMPRECISE == T | as.character(seqnames(deletion_ranges)) != selected_chrom | del_widths < bin_based_del_size_cutoff)
 
 snv_filter = NULL
 
