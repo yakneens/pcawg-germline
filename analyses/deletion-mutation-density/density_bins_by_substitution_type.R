@@ -48,8 +48,8 @@ load(carrier_mask_path)
 
 filtered_snv_ranges = list()
 
-selected_chrom = "21"
-sub_type = "t_to_a"
+#selected_chrom = "21"
+#sub_type = "t_to_a"
 
 if(sub_type == "c_to_a"){
   filtered_snv_ranges = lapply(snv_ranges, function(x) x[which((as.character(x$REF) == "C" & as.character(unlist(x$ALT)) == "A") | (as.character(x$REF) == "G" & as.character(unlist(x$ALT)) == "T"))])
