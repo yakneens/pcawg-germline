@@ -3,16 +3,16 @@
 'usage: density_bins_at_breakpoints.R [options]
 
 options:
--o <a> Chromosome
--s <e> Sub Type
--b <f> Bin Width
--n <g> Number of Bins
--m <t> Donor Meta Path
--d <j> Deletion Ranges Path
--i <k> Deletion Info Path
--v <l> SNV Ranges Path
--c <p> Carrier Mask Path
--r <q> Result Path' -> doc
+-o CHROM Chromosome
+-s SUB_TYPE  Sub Type
+-b BIN_WIDTH  Bin Width
+-n NUM_BINS  Number of Bins
+-m DONOR_META_PATH  Donor Meta Path
+-d DELETION_RANGES_PATH  Deletion Ranges Path
+-i DELETION_INFO_PATH  Deletion Info Path
+-v SNV_RANGES_PATH  SNV Ranges Path
+-c CARRIER_MASK_PATH  Carrier Mask Path
+-r RESULT_PATH  Result Path' -> doc
 
 library(docopt)
 
