@@ -1,6 +1,6 @@
 #!/usr/bin/env Rscript
 
-'usage: density_bins_at_breakpoints.R -o <a> -s <e> -b <f> -n <g> -m <t> -d <j> -i <k> -v <l> -c <p> -r <q>
+'usage: density_bins_at_breakpoints.R [options]
 
 options:
 -o <a> Chromosome
