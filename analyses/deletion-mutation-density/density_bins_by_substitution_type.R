@@ -48,18 +48,21 @@ load(carrier_mask_path)
 
 filtered_snv_ranges = list()
 
+selected_chrom = "21"
+sub_type = "t_to_a"
+
 if(sub_type == "c_to_a"){
   filtered_snv_ranges = lapply(snv_ranges, function(x) x[which((as.character(x$REF) == "C" & as.character(unlist(x$ALT)) == "A") | (as.character(x$REF) == "G" & as.character(unlist(x$ALT)) == "T"))])
 } else if(sub_type == "c_to_g"){
   filtered_snv_ranges = lapply(snv_ranges, function(x) x[which((as.character(x$REF) == "C" & as.character(unlist(x$ALT)) == "G") | (as.character(x$REF) == "G" & as.character(unlist(x$ALT)) == "C"))])
 } else if(sub_type == "c_to_t"){
-  c_to_t_snv_ranges = lapply(snv_ranges, function(x) x[which((as.character(x$REF) == "C" & as.character(unlist(x$ALT)) == "T") | (as.character(x$REF) == "G" & as.character(unlist(x$ALT)) == "A"))])  
+  filtered_snv_ranges = lapply(snv_ranges, function(x) x[which((as.character(x$REF) == "C" & as.character(unlist(x$ALT)) == "T") | (as.character(x$REF) == "G" & as.character(unlist(x$ALT)) == "A"))])  
 } else if(sub_type == "t_to_g"){
-  t_to_g_snv_ranges = lapply(snv_ranges, function(x) x[which((as.character(x$REF) == "T" & as.character(unlist(x$ALT)) == "G") | (as.character(x$REF) == "A" & as.character(unlist(x$ALT)) == "C"))])
+  filtered_snv_ranges = lapply(snv_ranges, function(x) x[which((as.character(x$REF) == "T" & as.character(unlist(x$ALT)) == "G") | (as.character(x$REF) == "A" & as.character(unlist(x$ALT)) == "C"))])
 } else if(sub_type == "t_to_a"){
-  t_to_a_snv_ranges = lapply(snv_ranges, function(x) x[which((as.character(x$REF) == "T" & as.character(unlist(x$ALT)) == "A") | (as.character(x$REF) == "A" & as.character(unlist(x$ALT)) == "T"))])
+  filtered_snv_ranges = lapply(snv_ranges, function(x) x[which((as.character(x$REF) == "T" & as.character(unlist(x$ALT)) == "A") | (as.character(x$REF) == "A" & as.character(unlist(x$ALT)) == "T"))])
 } else if(sub_type == "t_to_c"){
-  t_to_c_snv_ranges = lapply(snv_ranges, function(x) x[which((as.character(x$REF) == "T" & as.character(unlist(x$ALT)) == "C") | (as.character(x$REF) == "A" & as.character(unlist(x$ALT)) == "G"))])
+  filtered_snv_ranges = lapply(snv_ranges, function(x) x[which((as.character(x$REF) == "T" & as.character(unlist(x$ALT)) == "C") | (as.character(x$REF) == "A" & as.character(unlist(x$ALT)) == "G"))])
 }
 
 binned_densities = list()
