@@ -1,13 +1,13 @@
 #!/usr/bin/env Rscript
 
-'usage: density_bins_at_breakpoints.R -o <a> -s <e> -b <f> -n <g> -m <h> -d <j> -i <k> -v <l> -c <p> -r <q>
+'usage: density_bins_at_breakpoints.R -o <a> -s <e> -b <f> -n <g> -m <t> -d <j> -i <k> -v <l> -c <p> -r <q>
 
 options:
 -o <a> Chromosome
 -s <e> Sub Type
 -b <f> Bin Width
 -n <g> Number of Bins
--m <h> Donor Meta Path
+-m <t> Donor Meta Path
 -d <j> Deletion Ranges Path
 -i <k> Deletion Info Path
 -v <l> SNV Ranges Path
