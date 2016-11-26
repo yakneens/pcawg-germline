@@ -71,7 +71,8 @@ snv_counts = unlist(lapply(snv_ranges, length))
 
 print(paste("Processing chromosome:", selected_chrom))
 
-deletion_filter = which(deletion_info$IMPRECISE == T |  as.character(seqnames(deletion_ranges)) != selected_chrom)
+#deletion_filter = which(deletion_info$IMPRECISE == T |  as.character(seqnames(deletion_ranges)) != selected_chrom)
+deletion_filter = which(as.character(seqnames(deletion_ranges)) != selected_chrom)
 snv_filter = NULL
 
 filtered_deletion_carrier_mask = deletion_carrier_mask
@@ -105,6 +106,6 @@ pb = progress_bar$new(format=":current/:total [:bar] :percent :elapsed :eta",tot
 
 binned_densities[[selected_chrom]] = apply(hits, 1, function(x){pb$tick(); countOverlaps(all_tiles[[x[1]]], filtered_snv_ranges[[x[2]]]) / filtered_snv_counts[x[2]];})
 
-var_name = paste("density_bins_chrom_", selected_chrom, "_", sub_type,sep="")
+var_name = paste("density_bins_chrom_", selected_chrom, "_", sub_type,"_all", sep="")
 assign(var_name, binned_densities)
 save(list=c(var_name), file=paste(result_path, "/", var_name, ".RData", sep=""))
