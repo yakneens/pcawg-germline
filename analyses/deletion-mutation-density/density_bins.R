@@ -59,9 +59,9 @@ get_binned_densities <- function(deletion_filter, snv_filter){
   pre_deletion_ranges = trim(flank(filtered_deletion_ranges, width(filtered_deletion_ranges), start = T))
   post_deletion_ranges = trim(flank(filtered_deletion_ranges, width(filtered_deletion_ranges), start = F))
   
-  deletion_tiles = tile(filtered_deletion_ranges, n = num_bins)
-  pre_deletion_tiles = tile(pre_deletion_ranges, n = num_bins)
-  post_deletion_tiles = tile(post_deletion_ranges, n = num_bins)
+  deletion_tiles = tile(filtered_deletion_ranges, n = as.integer(num_bins))
+  pre_deletion_tiles = tile(pre_deletion_ranges, n = as.integer(num_bins))
+  post_deletion_tiles = tile(post_deletion_ranges, n = as.integer(num_bins))
   
   all_tiles = pc(pre_deletion_tiles, deletion_tiles, post_deletion_tiles)
   
