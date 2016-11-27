@@ -51,7 +51,7 @@ load(carrier_mask_path)
 
 del_widths = width(deletion_ranges)
 
-breakpoint_margin = 200
+breakpoint_margin = 1500
 bin_based_del_size_cutoff = (bin_width * num_bins) / 2 + breakpoint_margin
 print(paste("Deletion size cutoff:", bin_based_del_size_cutoff))
 
