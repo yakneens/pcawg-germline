@@ -25,6 +25,7 @@ library(docopt)
 
 basicConfig()
 
+
 opts = docopt(doc)
 selected_chrom = opts$chrom
 bin_width = as.integer(opts$bin_width)
@@ -40,11 +41,11 @@ non_carriers = as.logical(opts$non_carriers)
 
 loginfo("Parsed command-line options: %s", opts)
 
-#donor_meta_path = "~/Downloads/pcawg_data/del_density/by_project/donor_meta.RData"
-#deletion_ranges_path = "~/Downloads/pcawg_data/del_density/by_project/deletion_ranges.RData"
-#deletion_info_path = "~/Downloads/pcawg_data/del_density/by_project/deletion_info.RData"
-#snv_ranges_path = "~/Downloads/pcawg_data/del_density/by_project/snv_ranges.RData"
-#carrier_mask_path = "~/Downloads/pcawg_data/del_density/by_project/deletion_carrier_mask.RData"
+if(non_carriers){
+  carrier_str = "non_carriers"
+}else{
+  carrier_str = "carriers"
+}
 
 load(donor_meta_path)
 load(deletion_ranges_path)
@@ -54,15 +55,10 @@ load(carrier_mask_path)
 
 loginfo("Loaded input data")
 
-#Temporary
-#selected_chrom = "20"
-#bin_width = 100
-# Number of bins to each side of breakpoint
-#num_bins = 31
 
 del_widths = width(deletion_ranges)
 
-#breakpoint_margin = 1500
+
 bin_based_del_size_cutoff = (bin_width * num_bins) / 2 + breakpoint_margin
 loginfo("Set deletion size cutoff at: %d", bin_based_del_size_cutoff)
 
@@ -120,13 +116,16 @@ loginfo("Completed %s start densities", dim(start_binned_densities))
 end_binned_densities = apply(hits, 1, function(x){countOverlaps(end_tiles[[x[1]]], filtered_snv_ranges[[x[2]]]) / filtered_snv_counts[x[2]];})
 loginfo("Completed %s end densities.", dim(start_binned_densities))
 
-start_var_name = paste("start_breakpoint_density_bins_chrom_", selected_chrom, "_width_", bin_width, "_num_", num_bins, "_margin_", breakpoint_margin, sep="")
+base_var_name = paste("breakpoint_density_bins_chrom_", selected_chrom, "_width_", bin_width, "_num_", num_bins, "_margin_", breakpoint_margin, "_", carrier_str, sep="")
+
+start_var_name = paste("start_", base_var_name, sep="")
+
 assign(start_var_name, start_binned_densities)
 full_path = paste(result_path, "/", start_var_name, ".RData", sep="")
 save(list=c(start_var_name), file=full_path)
 loginfo("Saved start densities to %s.", full_path)
 
-end_var_name = paste("end_breakpoint_density_bins_chrom_", selected_chrom, "_width_", bin_width, "_num_", num_bins,"_margin_", breakpoint_margin, sep="")
+end_var_name = paste("end_", base_var_name, sep="")
 assign(end_var_name, end_binned_densities)
 full_path = paste(result_path, "/", end_var_name, ".RData", sep="")
 save(list=c(end_var_name), file=fill_path)
