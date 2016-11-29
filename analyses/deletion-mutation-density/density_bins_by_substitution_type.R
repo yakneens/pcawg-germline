@@ -96,7 +96,12 @@ post_deletion_tiles = tile(post_deletion_ranges, n = 10)
 all_tiles = pc(pre_deletion_tiles, deletion_tiles, post_deletion_tiles)
 loginfo("Created %s density bins",  dim(all_tiles))
 
-hits = which(filtered_deletion_carrier_mask[,] > 0, arr.ind = T)
+if(non_carriers){
+  hits = which(filtered_deletion_carrier_mask == 0, arr.ind = T)
+}else{
+  hits = which(filtered_deletion_carrier_mask > 0, arr.ind = T)
+}
+
 loginfo("Analyzing %s hits", dim(hits))
 
 #Filter out samples that don't have any variants left after filtering
