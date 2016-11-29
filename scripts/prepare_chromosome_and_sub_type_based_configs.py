@@ -31,8 +31,8 @@ def generate_config_objects(chromosome_names, sub_types, config_location):
         for sub_type in sub_types:
         
             this_config_data = {"r_param": {
-                                    "-o": chromosome_name,
-                                    "-s": sub_type
+                                    "--chrom": chromosome_name,
+                                    "--sub_type": sub_type
                                     }
                                 }
             

@@ -1,12 +1,12 @@
 {
 	"r_script": "/opt/pcawg-germline/analyses/deletion-mutation-density/density_bins_by_substitution_type.R",
 	"r_param": {
-		"-r": "/shared/data/results/r_density_bins_by_sub_type/",
-		"-m": "/shared/data/density_bins_input/donor_meta.RData",
-		"-d": "/shared/data/density_bins_input/deletion_ranges.RData",
-		"-i": "/shared/data/density_bins_input/deletion_info.RData",
-		"-v": "/shared/data/density_bins_input/snv_ranges.RData",
-		"-c": "/shared/data/density_bins_input/deletion_carrier_mask.RData"
+		"--result_path": "/shared/data/results/r_density_bins_by_sub_type/",
+		"--donor_meta_path": "/shared/data/density_bins_input/donor_meta.RData",
+		"--deletion_ranges_path": "/shared/data/density_bins_input/deletion_ranges.RData",
+		"--deletion_info_path": "/shared/data/density_bins_input/deletion_info.RData",
+		"--snv_ranges_path": "/shared/data/density_bins_input/snv_ranges.RData",
+		"--carrier_mask_path": "/shared/data/density_bins_input/deletion_carrier_mask.RData"
 	}
 	
 }
