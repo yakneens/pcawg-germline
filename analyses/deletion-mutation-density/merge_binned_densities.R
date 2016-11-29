@@ -22,26 +22,26 @@ save(summed_breakpoint_densities_precise_100_31_start, file="~/Downloads/pcawg_d
 save(summed_breakpoint_densities_precise_100_31_end, file="~/Downloads/pcawg_data/del_density/at_breakpoints/precise/summed_breakpoint_densities_precise_100_31_end.RData")
 
 ##All breakpoints
-breakpoint_densities_all_100_31_start = list()
-breakpoint_densities_all_100_31_end = list()
+breakpoint_densities_all_100_30_start = list()
+breakpoint_densities_all_100_30_end = list()
 for(i in seq(22)){
-  filepath = paste("~/Downloads/pcawg_data/del_density/at_breakpoints/precise_and_imprecise/end_breakpoint_density_bins_chrom_", i, "_width_100_num_31.RData", sep="")
+  filepath = paste("~/Downloads/pcawg_data/del_density/at_breakpoints/precise_and_imprecise/end_breakpoint_density_bins_chrom_", i, "_width_100_num_30.RData", sep="")
   load(filepath, verbose=T)
-  obj_name = paste("end_breakpoint_density_bins_chrom_", i, "_width_100_num_31", sep="")
-  mat_obj = matrix(get(obj_name), nrow=31)
-  breakpoint_densities_all_100_31_end[[i]] = mat_obj
+  obj_name = paste("end_breakpoint_density_bins_chrom_", i, "_width_100_num_30", sep="")
+  mat_obj = matrix(get(obj_name), nrow=30)
+  breakpoint_densities_all_100_30_end[[i]] = mat_obj
   rm(obj_name)
 }
 rm(list=ls(pattern = "*end_breakpoint_density_bins*"))
 
-save(breakpoint_densities_all_100_31_start, file="~/Downloads/pcawg_data/del_density/at_breakpoints/precise_and_imprecise/breakpoint_densities_all_100_31_start.RData")
-save(breakpoint_densities_all_100_31_end, file="~/Downloads/pcawg_data/del_density/at_breakpoints/precise_and_imprecise/breakpoint_densities_all_100_31_end.RData")
+save(breakpoint_densities_all_100_30_start, file="~/Downloads/pcawg_data/del_density/at_breakpoints/precise_and_imprecise/breakpoint_densities_all_100_30_start.RData")
+save(breakpoint_densities_all_100_30_end, file="~/Downloads/pcawg_data/del_density/at_breakpoints/precise_and_imprecise/breakpoint_densities_all_100_30_end.RData")
 
-summed_breakpoint_densities_all_100_31_start = matrix(unlist(lapply(breakpoint_densities_all_100_31_start, rowSums)), nrow=22, byrow = T)
-summed_breakpoint_densities_all_100_31_end = matrix(unlist(lapply(breakpoint_densities_all_100_31_end, rowSums)), nrow=22, byrow = T)
+summed_breakpoint_densities_all_100_30_start = matrix(unlist(lapply(breakpoint_densities_all_100_30_start, rowSums)), nrow=22, byrow = T)
+summed_breakpoint_densities_all_100_30_end = matrix(unlist(lapply(breakpoint_densities_all_100_30_end, rowSums)), nrow=22, byrow = T)
 
-save(summed_breakpoint_densities_all_100_31_start, file="~/Downloads/pcawg_data/del_density/at_breakpoints/precise_and_imprecise/summed_breakpoint_densities_all_100_31_start.RData")
-save(summed_breakpoint_densities_all_100_31_end, file="~/Downloads/pcawg_data/del_density/at_breakpoints/precise_and_imprecise/summed_breakpoint_densities_all_100_31_end.RData")
+save(summed_breakpoint_densities_all_100_30_start, file="~/Downloads/pcawg_data/del_density/at_breakpoints/precise_and_imprecise/summed_breakpoint_densities_all_100_30_start.RData")
+save(summed_breakpoint_densities_all_100_30_end, file="~/Downloads/pcawg_data/del_density/at_breakpoints/precise_and_imprecise/summed_breakpoint_densities_all_100_30_end.RData")
 
 #Breakpoints by project precise
 projects = c("BRCA_US", "PRAD_CA", "PBCA_DE", "LIRI_JP")
