@@ -38,7 +38,7 @@ donor_meta = data.table(cbind(sample_meta[,sample_column_list],
 rm(sample_meta, sample_column_list, clinical_meta, clinical_column_list, hist_meta, hist_column_list)
 
 #Load germline deletions data
-load("~/Downloads/pcawg_data/dels.Rdata")
+load("~/Downloads/pcawg_data/dels_28_11_2016.Rdata")
 #load("~/Downloads/pcawg_data/germline_deletions/dels_chr22.Rdata")
 
 set_deletion_range_ends(deletions)

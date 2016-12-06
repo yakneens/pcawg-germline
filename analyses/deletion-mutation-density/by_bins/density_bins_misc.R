@@ -5,8 +5,12 @@ clinical_meta = get_clinical_metadata("/home/centos/deletion_analysis_data/pcawg
 
 hist_meta = get_histology_metadata("/home/centos/deletion_analysis_data/pcawg_specimen_histology_August2016_v6.tsv", sample_meta)
 
-
+load("~/Downloads/pcawg_data/del_density/input_data/deletion_ranges.RData")
+load("~/Downloads/pcawg_data/del_density/input_data/donor_meta.RData")
+load("~/Downloads/pcawg_data/del_density/input_data/deletion_carrier_mask.RData")
+load("~/Downloads/pcawg_data/del_density/input_data/snv_ranges.RData")
 load("/home/centos/deletion_analysis_data/dels.Rdata")
+
 #load("~/Downloads/pcawg_data/germline_deletions/dels_chr22.Rdata")
 
 set_deletion_range_ends(deletions)
