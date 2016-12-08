@@ -1,0 +1,12 @@
+{
+	"r_script": "/opt/pcawg-germline/analyses/deletion-mutation-density/density_bins.R",
+	"r_param": {
+		"--num_bins": 10,
+		"--result_path": "/shared/data/results/r_density_bins_raw_counts/",
+		"--donor_meta_path": "/shared/data/density_bins_input/donor_meta.RData",
+		"--deletion_ranges_path": "/shared/data/density_bins_input/deletion_ranges.RData",
+		"--snv_ranges_path": "/shared/data/density_bins_input/snv_ranges.RData",
+		"--carrier_mask_path": "/shared/data/density_bins_input/deletion_carrier_mask.RData"
+	}
+	
+}
