@@ -93,8 +93,8 @@ get_binned_densities <- function(deletion_filter, snv_filter){
   
   pb = progress_bar$new(format=":current/:total [:bar] :percent :elapsed :eta",total = dim(hits)[1])
   
-  #binned_densities = apply(hits, 1, function(x){pb$tick(); countOverlaps(all_tiles[[x[1]]], filtered_snv_ranges[[x[2]]]) / filtered_snv_counts[x[2]];})
-  binned_densities = apply(hits, 1, function(x){pb$tick(); countOverlaps(all_tiles[[x[1]]], filtered_snv_ranges[[x[2]]]);})
+  binned_densities = apply(hits, 1, function(x){pb$tick(); countOverlaps(all_tiles[[x[1]]], filtered_snv_ranges[[x[2]]]) / filtered_snv_counts[x[2]];})
+  #binned_densities = apply(hits, 1, function(x){pb$tick(); countOverlaps(all_tiles[[x[1]]], filtered_snv_ranges[[x[2]]]);})
   loginfo("Completed %s density bins", dim(binned_densities))
   
   return(binned_densities)
@@ -102,7 +102,7 @@ get_binned_densities <- function(deletion_filter, snv_filter){
 }
 
 var_name = paste("density_bins_", selected_chrom, "_", carrier_str, sep="")
-assign(var_name, get_binned_densities(which(as.character(seqnames(deletion_ranges)) != selected_chrom), NULL))
+assign(var_name, get_binned_densities(which(as.character(seqnames(deletion_ranges)) != selected_chrom), which(unlist(lapply(snv_ranges, length)) < 1000)))
 full_path = paste(result_path, "/", var_name, ".RData", sep="")
 save(list=c(var_name), file=full_path)
 loginfo("Saved density bins to %s", full_path)
