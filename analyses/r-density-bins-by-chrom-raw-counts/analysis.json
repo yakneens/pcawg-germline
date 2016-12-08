@@ -1,5 +1,5 @@
 {
-	"r_script": "/opt/pcawg-germline/analyses/deletion-mutation-density/density_bins.R",
+	"r_script": "/opt/pcawg-germline/analyses/deletion-mutation-density/by_bins/density_bins.R",
 	"r_param": {
 		"--num_bins": 10,
 		"--result_path": "/shared/data/results/r_density_bins_raw_counts/",

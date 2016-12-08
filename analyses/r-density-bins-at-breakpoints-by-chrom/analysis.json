@@ -1,5 +1,5 @@
 {
-	"r_script": "/opt/pcawg-germline/analyses/deletion-mutation-density/density_bins_at_breakpoints.R",
+	"r_script": "/opt/pcawg-germline/analyses/deletion-mutation-density/at_breakpoints/density_bins_at_breakpoints.R",
 	"r_param": {	    
 		"--bin_width": 100,
 		"--num_bins": 30,

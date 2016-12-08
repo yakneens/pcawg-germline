@@ -1,5 +1,5 @@
 {
-	"r_script": "/opt/pcawg-germline/analyses/deletion-mutation-density/density_bins_by_substitution_type.R",
+	"r_script": "/opt/pcawg-germline/analyses/deletion-mutation-density/by_substitution_type/density_bins_by_substitution_type.R",
 	"r_param": {
 		"--result_path": "/shared/data/results/r_density_bins_by_sub_type/",
 		"--donor_meta_path": "/shared/data/density_bins_input/donor_meta.RData",
