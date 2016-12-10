@@ -52,8 +52,9 @@ load("~/Downloads/pcawg_data/dels_28_11_2016.RData")
 
 set_deletion_range_ends(deletions)
 
-deletion_genotypes = geno(deletions)$GT[,match(donor_meta$normal_wgs_aliquot_id, colnames(geno(deletions)$GT))] 
-
+deletion_genotypes = geno(deletions)$GT
+deletion_genotypes = deletion_genotypes[,match(donor_meta$normal_wgs_aliquot_id, colnames(deletion_genotypes))]
+#deletion_ranges = rowRanges(deletions)
 
 #Load somatic SNV data
 load("~/Downloads/pcawg_data/snv_samples.Rdata")

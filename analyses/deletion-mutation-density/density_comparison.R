@@ -44,6 +44,8 @@ load("~/Downloads/pcawg_data/dels_28_11_2016.Rdata")
 set_deletion_range_ends(deletions)
 
 deletion_genotypes = geno(deletions)$GT[,match(donor_meta$normal_wgs_aliquot_id, colnames(geno(deletions)$GT))] 
+deletion_ranges = rowRanges(deletions)
+del_widths = width(deletion_ranges)
 
 
 #Load somatic SNV data
@@ -64,15 +66,21 @@ snv_samples = snv_samples[-missing_sample_indices]
 colnames(deletion_genotypes) = donor_meta$donor_unique_id
 names(snv_samples) = donor_meta$donor_unique_id
 
+snv_ranges = lapply(snv_samples, rowRanges)
+snv_counts = unlist(lapply(snv_ranges, length))
+rm(snv_samples)
+
+#Filter samples by somatic mutation rate
+snv_sample_filter = which(unlist(lapply(snv_ranges, length)) < 1000)
+snv_ranges = snv_ranges[-snv_sample_filter]
+deletion_genotypes = deletion_genotypes[,-snv_sample_filter]
+
 #Compute matrix with 1 for heterozygous carriers of a deletion, 0 for non-carriers (hom ref), and NA for others
 deletion_carrier_mask = get_het_carrier_mask(deletion_genotypes)
 
-deletion_ranges = rowRanges(deletions)
-del_widths = width(deletion_ranges)
-snv_ranges = lapply(snv_samples, rowRanges)
-snv_counts = unlist(lapply(snv_ranges, length))
 
-rm(snv_samples)
+
+
 
 deletion_filter = NULL
 snv_filter = NULL
