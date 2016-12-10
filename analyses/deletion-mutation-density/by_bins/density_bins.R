@@ -102,7 +102,7 @@ get_binned_densities <- function(deletion_filter, snv_filter){
 }
 
 var_name = paste("density_bins_", selected_chrom, "_", carrier_str, sep="")
-assign(var_name, get_binned_densities(which(as.character(seqnames(deletion_ranges)) != selected_chrom), which(unlist(lapply(snv_ranges, length)) < 1000)))
+assign(var_name, get_binned_densities(which(as.character(seqnames(deletion_ranges)) != selected_chrom), NULL))
 full_path = paste(result_path, "/", var_name, ".RData", sep="")
 save(list=c(var_name), file=full_path)
 loginfo("Saved density bins to %s", full_path)
