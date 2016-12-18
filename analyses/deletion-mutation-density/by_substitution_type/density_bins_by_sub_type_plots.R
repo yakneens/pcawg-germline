@@ -5,6 +5,8 @@ library(data.table)
 load("~/Downloads/pcawg_data/del_density/by_substitution/tabular_summed_binned_densities_by_sub_type_carriers_norm.RData", verbose=T)
 binned_densities_by_sub_type_carriers_norm_for_plot = tabular_summed_binned_densities_by_sub_type_carriers_norm[,.(snv_density=rowSums(.SD)),.(sub_type=x, bin_index = V2),.SDcols=as.character(seq(22))]
 
+binned_densities_by_sub_type_carriers_norm_for_plot = melt(as.data.table(summed_merged_binned_densities_by_sub_type)[,bin_index:=seq(30)], id.vars = "bin_index", variable.name = "sub_type", value.name="snv_density")
+
 max_density = max(binned_densities_by_sub_type_carriers_norm_for_plot$snv_density) 
 ggplot(binned_densities_by_sub_type_carriers_norm_for_plot, aes(x=bin_index, y=snv_density,fill=sub_type)) + 
   geom_bar(stat="identity") + 

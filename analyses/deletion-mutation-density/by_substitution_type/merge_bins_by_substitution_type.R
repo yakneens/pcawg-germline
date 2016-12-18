@@ -4,7 +4,7 @@ binned_densities_by_sub_type_carriers_all = list()
 for(j in seq_along(sub_types)){
   binned_densities_by_sub_type_carriers_all[[j]] = list()
   for(i in seq(22)){
-    filepath = paste("~/Downloads/pcawg_data/del_density/by_substitution/density_bins_chrom_", i, "_", sub_types[j], "_carriers_all.RData", sep="")
+    filepath = paste("~/Downloads/pcawg_data/del_density/by_substitution/raw/density_bins_chrom_", i, "_", sub_types[j], "_carriers_all.RData", sep="")
     load(filepath, verbose=T)
     obj_name = paste("density_bins_chrom_", i, "_", sub_types[j], "_carriers_all", sep="")
     binned_densities_by_sub_type_carriers_all[[j]][[i]] = get(obj_name)[[1]]
@@ -28,7 +28,7 @@ binned_densities_by_sub_type_carriers_norm = list()
 for(j in seq_along(sub_types)){
   binned_densities_by_sub_type_carriers_norm[[j]] = list()
   for(i in seq(22)){
-    filepath = paste("~/Downloads/pcawg_data/del_density/by_substitution/density_bins_chrom_", i, "_", sub_types[j], "_carriers_all.RData", sep="")
+    filepath = paste("~/Downloads/pcawg_data/del_density/by_substitution/raw/density_bins_chrom_", i, "_", sub_types[j], "_carriers_all.RData", sep="")
     load(filepath, verbose=T)
     obj_name = paste("density_bins_chrom_", i, "_", sub_types[j], "_carriers_all", sep="")
     binned_densities_by_sub_type_carriers_norm[[j]][[i]] = t(t(get(obj_name)[[1]]) / width(deletion_ranges[colnames(get(obj_name)[[1]])]))

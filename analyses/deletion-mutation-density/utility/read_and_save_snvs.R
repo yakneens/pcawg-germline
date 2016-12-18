@@ -19,3 +19,5 @@ snv_samples = read_snv_samples_from_vcf("~/Downloads/pcawg_data/final_consensus_
 #Save SNV samples in R format
 save_snv_samples(snv_samples, "~/Downloads/pcawg_data/snv_samples.Rdata")
 
+germline_snv_samples = read_germline_snvs_from_vcf("~/Downloads/pcawg_data/germline_snv/pcawg2727.chr1_22.1000gp_phase3_shapeit2_mvncall_integrated_v5b.gmaf1.genotypes.release_180216.vcf.gz",chr22_rng)
+save_snv_samples(germline_snv_samples, "~/Downloads/pcawg_data/germline_snv_samples.Rdata")

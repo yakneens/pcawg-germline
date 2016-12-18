@@ -40,7 +40,7 @@ rm(sample_meta, sample_column_list, clinical_meta, clinical_column_list, hist_me
 #Load germline deletions data
 load("~/Downloads/pcawg_data/dels_28_11_2016.Rdata")
 #load("~/Downloads/pcawg_data/germline_deletions/dels_chr22.Rdata")
-
+load("~/Downloads/pcawg_data/del_density/input_data/deletion_ranges.RData")
 set_deletion_range_ends(deletions)
 
 deletion_genotypes = geno(deletions)$GT[,match(donor_meta$normal_wgs_aliquot_id, colnames(geno(deletions)$GT))] 
@@ -74,6 +74,7 @@ rm(snv_samples)
 snv_sample_filter = which(unlist(lapply(snv_ranges, length)) < 1000)
 snv_ranges = snv_ranges[-snv_sample_filter]
 deletion_genotypes = deletion_genotypes[,-snv_sample_filter]
+donor_meta = donor_meta[-snv_sample_filter,]
 
 #Compute matrix with 1 for heterozygous carriers of a deletion, 0 for non-carriers (hom ref), and NA for others
 deletion_carrier_mask = get_het_carrier_mask(deletion_genotypes)

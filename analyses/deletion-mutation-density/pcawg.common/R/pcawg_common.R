@@ -69,7 +69,7 @@ read_germline_deletions_from_vcf <- function(file_location, range){
   return(dels)
 }
 
-#Read in germline deletions
+#Read in germline snvs
 read_germline_snvs_from_vcf <- function(file_location, range){
   if(!missing(range)){
     tab = TabixFile(file_location)
@@ -85,6 +85,8 @@ read_germline_snvs_from_vcf <- function(file_location, range){
 save_deletions_to_r_file <- function(deletions, file_location){
   save(deletions, file=file_location)
 }
+
+
 
 #If genotype of element is in genotypes_list record it as 1, otherwise record it as 0
 genotype_mask <- function(element, genotypes_list){

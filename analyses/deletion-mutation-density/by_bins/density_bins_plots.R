@@ -1,7 +1,8 @@
 #Overall density
 load("~/Downloads/pcawg_data/del_density/overall/summed_density_bins_carriers.RData", verbose=T)
-
-binned_densities_carriers_for_plot = data.table(colSums(summed_binned_densities_carriers), seq(num_bins))
+num_bins = 30
+#binned_densities_carriers_for_plot = data.table(colSums(summed_binned_densities_carriers), seq(num_bins))
+binned_densities_carriers_for_plot = data.table(rowSums(binned_densities), seq(num_bins))
 setnames(binned_densities_carriers_for_plot, c("snv_density", "bin_index"))
 
 pre_del = binned_densities_carriers_for_plot[bin_index %in% seq(10), snv_density]

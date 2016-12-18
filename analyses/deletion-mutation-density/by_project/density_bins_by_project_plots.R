@@ -1,5 +1,5 @@
 load("~/Downloads/pcawg_data/del_density/by_project/tabular_summed_density_bins_by_project_carriers_norm.RData")
-melted_tabular_summed_density_bins_by_project_carriers_norm = melt(tabular_summed_density_bins_by_project_carriers_norm, id.vars = "bin_index", variable.name = "project", value.name = "snv_density")
+melted_tabular_summed_density_bins_by_project_carriers_norm = melt(tabular_summed_density_bins_by_project_carriers, id.vars = "bin_index", variable.name = "project", value.name = "snv_density")
 
 max_density = max(binned_densities_by_sub_type_non_carriers_norm_for_plot$snv_density) 
 ggplot(melted_tabular_summed_density_bins_by_project_carriers_norm, aes(x=bin_index, y=snv_density,fill=project)) + 
