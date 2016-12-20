@@ -51,7 +51,7 @@ def run_msisensor(**kwargs):
 default_args = {
     'owner': 'airflow',
     'depends_on_past': False,
-    'start_date': datetime(2020, 01, 01),
+    'start_date': datetime.datetime(2020, 01, 01),
     'email': ['airflow@airflow.com'],
     'email_on_failure': False,
     'email_on_retry': False,
@@ -79,7 +79,7 @@ msisensor_task.set_upstream(start_analysis_run_task)
 
 complete_analysis_run_task = PythonOperator(
     task_id = "complete_analysis_run",
-    python_callable = complete_analysis_run_task,
+    python_callable = complete_analysis_run,
     provide_context = True,
     dag = dag)
 
