@@ -7,8 +7,8 @@ import logging
 from subprocess import call
 
 import tracker.model
-#from tracker.model.analysis_run import *
-#from tracker.util.workflow_common import *
+from tracker.model.analysis_run import *
+from tracker.util.workflow_common import *
 
 def run_msisensor(**kwargs):
     config = get_config(kwargs)
