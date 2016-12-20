@@ -1,0 +1,8 @@
+{
+	"results_base_path": "/shared/data/results/msisensor/",
+	"results_local_path": "/tmp/msisensor/",
+	"microsatellites_ref": "/shared/data/msisensor/genome.microsatellites",
+	"msisensor": {
+		"flags": "-f 0.05 -c 15 -l 5 -p 10 -m 50 -q 3 -s 5 -w 40 -u 500"
+	}
+}

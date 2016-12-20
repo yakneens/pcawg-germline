@@ -1,0 +1,13 @@
+{
+	"microsatellites_ref": "/shared/data/msisensor/genome.microsatellites",
+	"bgzip": {
+		"path": "/usr/local/bin/bgzip",
+		"flags": ""
+	},
+	"rsync": {
+		"flags": "-a -v --remove-source-files"
+	},
+	"msisensor": {
+		"path": "/opt/msisensor/msisensor"
+	}
+}
