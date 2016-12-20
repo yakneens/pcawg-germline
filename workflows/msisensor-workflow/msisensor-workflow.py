@@ -60,7 +60,7 @@ default_args = {
 }
 
 dag = DAG("msisensor", default_args = default_args,
-          schedule_interal = None, concurrency = 10000,
+          schedule_interval = None, concurrency = 10000,
           max_active_runs = 2000)
 
 start_analysis_run_task = PythonOperator(
