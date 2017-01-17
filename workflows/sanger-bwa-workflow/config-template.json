@@ -1,0 +1,40 @@
+{
+  "reference": {
+    "path": "/home/centos/dockstore-cgpmap/examples/core_ref_GRCh37d5.tar.gz",
+    "class": "File"
+  },
+  "bwa_idx": {
+    "path": "/home/centos/dockstore-cgpmap/examples/bwa_idx_GRCh37d5.tar.gz",
+    "class": "File"
+  },
+  "bams_in": [
+    {"class": "File",
+      "path": "/home/centos/dockstore-cgpmap/examples/insilico_21.bam"}
+  ],
+  "cram": false,
+  "sample": "test",
+  "out_bam": {
+    "path": "/tmp/mapped.bam",
+    "class": "File"
+  },
+  "out_bai": {
+    "path": "/tmp/mapped.bam.bai",
+    "class": "File"
+  },
+  "out_bas": {
+    "path": "/tmp/mapped.bam.bas",
+    "class": "File"
+  },
+  "out_md5": {
+    "path": "/tmp/mapped.bam.md5",
+    "class": "File"
+  },
+  "out_met": {
+    "path": "/tmp/mapped.bam.met",
+    "class": "File"
+  },
+  "out_maptime": {
+    "path": "/tmp/mapped.bam.maptime",
+    "class": "File"
+  }
+}
