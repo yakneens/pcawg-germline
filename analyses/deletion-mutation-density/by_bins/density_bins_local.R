@@ -5,8 +5,8 @@ library(data.table)
 library(GenomicFeatures)
 library(progress)
 library(logging)
+library(purrr)
 
-selected_chrom = 20
 donor_meta_path = "~/Downloads/pcawg_data/del_density/input_data/donor_meta.RData"
 deletion_ranges_path = "~/Downloads/pcawg_data/del_density/input_data/deletion_ranges.RData"
 snv_ranges_path = "~/Downloads/pcawg_data/del_density/input_data/snv_ranges.RData"
@@ -14,6 +14,9 @@ carrier_mask_path = "~/Downloads/pcawg_data/del_density/input_data/deletion_carr
 result_path = "~/Downloads/pcawg_data/del_density/"
 non_carriers = FALSE
 
+skip_breakpoints = T
+breakpoint_margin = 1000
+scaling_factor = 1e09
 
 
 if(non_carriers){
@@ -34,8 +37,11 @@ loginfo("Loaded input data")
 #deletion_filter = which(as.character(seqnames(deletion_ranges)) != selected_chrom)
 num_bins = 10
 
-deletion_filter = which(width(deletion_ranges) < 1400)
-deletion_filter = NULL
+exclusion_list = c("DEL00185014","DEL00185540","DEL00185702","DEL00185656","DEL00185183","DEL00185635",
+                   "DEL00184932","DEL00184909","DEL00185063","DEL00185776","DEL00184729","DEL00184485",
+                   "DEL00184528","DEL00185533","DEL00184807","DEL00105731")
+
+deletion_filter = which(width(deletion_ranges) < 3000 | names(deletion_ranges) %in% exclusion_list)
 snv_filter = NULL
 
 snv_counts = unlist(lapply(snv_ranges, length))
@@ -62,8 +68,27 @@ if(!is.null(snv_filter)){
 }
 loginfo("Filtered SNV samples. Retaining %d of total %d samples", length(filtered_snv_ranges), length(snv_ranges))
 
-pre_deletion_ranges = trim(flank(filtered_deletion_ranges, width(filtered_deletion_ranges), start = T))
-post_deletion_ranges = trim(flank(filtered_deletion_ranges, width(filtered_deletion_ranges), start = F))
+
+
+if(skip_breakpoints){
+  filtered_deletion_ranges = narrow(filtered_deletion_ranges, start=breakpoint_margin + 1, end=-(breakpoint_margin + 1))
+  pre_deletion_ranges = filtered_deletion_ranges %>% 
+    flank(., width(.), start = T) %>% 
+    trim(.) %>% 
+    GenomicRanges::shift(., -2*breakpoint_margin)
+  post_deletion_ranges = filtered_deletion_ranges %>% 
+    flank(., width(.), start = F) %>% 
+    trim(.) %>% 
+    GenomicRanges::shift(., -2*breakpoint_margin)
+}else{
+  pre_deletion_ranges = filtered_deletion_ranges %>%
+    flank(., width(.), start = T) %>%
+    trim(.)
+  post_deletion_ranges = filtered_deletion_ranges %>%
+    flank(., width(.), start = F) %>%
+    trim(.)
+}
+
 
 deletion_tiles = tile(filtered_deletion_ranges, n = as.integer(num_bins))
 pre_deletion_tiles = tile(pre_deletion_ranges, n = as.integer(num_bins))
@@ -89,21 +114,17 @@ get_overlap_counts<- function(donor_index, del_list, all_tiles){
   overlaps = as.data.table(findOverlaps(tiles_by_donor, variants_by_donor))
   overlap_counts = overlaps[, .N, queryHits]
   x = vector(mode="integer", length = 30 * length(del_list))
-  names(x) = unlist(lapply(names(deletion_ranges)[del_list], function(x){rep(x,30)}))
-  x[overlap_counts$queryHits] = overlap_counts$N / length(variants_by_donor) / width(deletion_ranges[1 + overlap_counts$queryHits %/% 30])
+  names(x) = unlist(lapply(names(filtered_deletion_ranges)[del_list], function(x){rep(x,30)}))
+  x[overlap_counts$queryHits] = overlap_counts$N / length(variants_by_donor) / width(filtered_deletion_ranges[1 + overlap_counts$queryHits %/% 30]) / length(filtered_deletion_ranges) * scaling_factor
   return(x)
 }
 
 pb = progress_bar$new(format=":current/:total [:bar] :percent :elapsed :eta",total = dim(dels_by_donor)[1])
 
 
-binned_densities = do.call(cbind, lapply(apply(dels_by_donor, 1, function(x){pb$tick(); get_overlap_counts(x[[1]], x[[2]], all_tiles)}), function(x){matrix(x, nrow=30);}))
+binned_densities = do.call(cbind, lapply(apply(dels_by_donor, 1, function(x){pb$tick(); get_overlap_counts(x[[1]], x[[2]], all_tiles)}), function(x){matrix(x, nrow=30, dimnames = list(NULL, names(x)[1 + (seq(length(x)/30) - 1)*30]));}))
 
 loginfo("Completed %s density bins", dim(binned_densities))
 
-#var_name = paste("density_bins_", selected_chrom, "_", carrier_str, sep="")
-#assign(var_name, get_binned_densities(which(as.character(seqnames(deletion_ranges)) != selected_chrom), NULL))
-#full_path = paste(result_path, "/", var_name, ".RData", sep="")
-#save(list=c(var_name), file=full_path)
-#loginfo("Saved density bins to %s", full_path)
+
 

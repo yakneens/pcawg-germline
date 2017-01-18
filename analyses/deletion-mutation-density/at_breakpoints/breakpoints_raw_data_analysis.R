@@ -114,7 +114,7 @@ ggplot(reduced_melted_breakpoint_densities[as.integer(bin_index) %in% c(1,13,14,
   xlab("Log10 SNV density") + 
   ylab("Density")
 
-data_for_plot = reduced_melted_breakpoint_densities[, .(snv_density = sum(snv_density)), by=c("del","bin_index", "breakpoint_type")][, total_snv_density := sum(snv_density), by=c("bin_index", "breakpoint_type")][, scaled_snv_density := snv_density / total_snv_density][order(bin_index, breakpoint_type, -total_snv_density)]
+data_for_plot = reduced_melted_breakpoint_densities[, .(snv_density = sum(snv_density)), by=c("del","bin_index", "breakpoint_type")][, total_snv_density := sum(snv_density), by=c("bin_index", "breakpoint_type")][, scaled_snv_density := snv_density / total_snv_density][order(bin_index, breakpoint_type, -scaled_snv_density)]
 ggplot(data_for_plot[breakpoint_type=="end",.SD[1:5],by=c("bin_index", "breakpoint_type")], aes(x=bin_index, y=scaled_snv_density, fill=reorder(del, -scaled_snv_density), label=scales::percent(round(scaled_snv_density, digits = 2)))) + 
   geom_bar(stat="identity", position="stack") + 
   geom_text(size = 3, position = position_stack(vjust = 0.5)) + 

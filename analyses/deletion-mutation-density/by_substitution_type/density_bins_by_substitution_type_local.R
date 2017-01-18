@@ -5,7 +5,7 @@ library(data.table)
 library(GenomicFeatures)
 library(progress)
 library(logging)
-
+library(purrr)
 
 
 donor_meta_path = "~/Downloads/pcawg_data/del_density/input_data/donor_meta.RData"
@@ -14,7 +14,7 @@ deletion_info_path = "~/Downloads/pcawg_data/del_density/input_data/deletion_inf
 snv_ranges_path = "~/Downloads/pcawg_data/del_density/input_data/snv_ranges.RData"
 carrier_mask_path = "~/Downloads/pcawg_data/del_density/input_data/deletion_carrier_mask.RData"
 non_carriers = FALSE
-
+scaling_factor = 1e05
 
 
 if(non_carriers){
@@ -41,7 +41,12 @@ sub_type_mapping[["t_to_g"]] = list(c("T", "G"), c("A", "C"))
 sub_type_mapping[["t_to_c"]] = list(c("T", "C"), c("A", "G"))
 
 #deletion_filter = which(as.character(seqnames(deletion_ranges)) != selected_chrom)
-deletion_filter = NULL
+exclusion_list = c("DEL00185014","DEL00185540","DEL00185702","DEL00185656","DEL00185183","DEL00185635",
+                   "DEL00184932","DEL00184909","DEL00185063","DEL00185776","DEL00184729","DEL00184485",
+                   "DEL00184528","DEL00185533","DEL00184807","DEL00105731")
+
+deletion_filter = which(width(deletion_ranges) < 1000 | names(deletion_ranges) %in% exclusion_list)
+
 snv_filter = NULL
 
 filtered_snv_ranges = snv_ranges
@@ -95,8 +100,8 @@ get_overlap_counts<- function(donor_index, del_list, all_tiles){
     overlap_counts = overlaps[, .N, queryHits]
     x = vector(mode="integer", length = 30 * length(del_list))
     names(x) = unlist(lapply(names(deletion_ranges)[del_list], function(x){rep(x,30)}))
-    x[overlap_counts$queryHits] = overlap_counts$N / length(sub_type_variants_by_donor) / width(deletion_ranges[1 + overlap_counts$queryHits %/% 30])
-    density_bins_by_sub_type[[sub_type]] = matrix(x, nrow=30)  
+    x[overlap_counts$queryHits] = overlap_counts$N / length(sub_type_variants_by_donor) / width(deletion_ranges[1 + overlap_counts$queryHits %/% 30]) * scaling_factor
+    density_bins_by_sub_type[[sub_type]] = matrix(x, nrow=30, dimnames = list(NULL, names(x)[1 + (seq(length(x)/30) - 1)*30]))  
   }
   return(density_bins_by_sub_type)
 }

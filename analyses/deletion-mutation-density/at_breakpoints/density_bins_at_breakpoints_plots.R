@@ -10,8 +10,12 @@ load("~/Downloads/pcawg_data/del_density/at_breakpoints/summed_breakpoint_densit
 
 breakpoint_densities_100_30_200_carriers_for_plot = rbind(data.table(colSums(summed_breakpoint_densities_100_30_200_carriers_start), seq(num_bins), "start"),
                                                      data.table(colSums(summed_breakpoint_densities_100_30_200_carriers_end), seq(num_bins), "end"))
+
 setnames(breakpoint_densities_100_30_200_carriers_for_plot, c("snv_density", "bin_index", "breakpoint_type"))
 breakpoint_densities_100_30_200_carriers_for_plot$breakpoint_type = factor(breakpoint_densities_100_30_200_carriers_for_plot$breakpoint_type, levels=c("start", "end"))
+
+breakpoint_densities_100_30_200_carriers_for_plot = melt(as.data.table(lapply(binned_densities, rowSums))[,bin_index:=seq(30)], id.vars = "bin_index", variable.name = "breakpoint_type", value.name = "snv_density")
+
 
 
 max_density = max(breakpoint_densities_100_30_200_carriers_for_plot$snv_density) 
