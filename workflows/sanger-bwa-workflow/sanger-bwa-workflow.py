@@ -110,7 +110,7 @@ default_args = {
     'retry_delay': timedelta(minutes=5),
 }
 
-dag = DAG("pcawg_bwa", default_args=default_args,
+dag = DAG("sanger_bwa", default_args=default_args,
           schedule_interval=None, concurrency=50, max_active_runs=50)
 
 
