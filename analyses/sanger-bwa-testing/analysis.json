@@ -1,6 +1,6 @@
 {
 	"results_base_path": "/shared/data/results/sanger_bwa_test/",
 	"results_local_path": "/tmp/sanger_bwa/",
-	"reference_location": "/shared/data/reference_grch37d5/core_ref_GRCh37d5.tar.gz"
-    "bwa_index_location": "/shared/data/reference_grch37d5/bwa_idx_GRCh37d5.tar.gz"
+	"reference_location": "/shared/data/reference_grch37d5/core_ref_GRCh37d5.tar.gz",
+	"bwa_index_location": "/shared/data/reference_grch37d5/bwa_idx_GRCh37d5.tar.gz"
 }
