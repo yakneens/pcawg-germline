@@ -70,7 +70,6 @@ def run_bwa(**kwargs):
     sample_id = sample["sample_id"]
     sample_location = sample["sample_location"]
     reference_location = config["reference_location"]
-    sample_path_prefix = sample["path_prefix"]
     dcc_project_code = config["dcc_project_code"]
     submitter_donor_id = config["submitter_donor_id"]
     
