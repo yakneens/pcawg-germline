@@ -69,7 +69,6 @@ def run_bwa(**kwargs):
     
     sample_id = sample["sample_id"]
     sample_location = sample["sample_location"]
-    submitter_donor_id = config["submitter_donor_id"]
     
     cwl_flags = config["cwl_flags"]
     
