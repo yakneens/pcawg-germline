@@ -86,10 +86,20 @@ def run_bwa(**kwargs):
                result_path_prefix,
                cwl_file_location,
                cwl_config_location)
+    call_command("id", "id")
     call_command(cwl_command, "cwl")
-
     #copy_result(compressed_sample_filename, sample_id, config)
     #"cwl-runner --debug --non-strict --enable-dev Dockstore.cwl examples/sample_configs.local.json"
+#try:
+#    my_output = check_output("sudo cwl-runner  --debug --non-strict --enable-dev  --outdir /tmp/sanger_bwa//b6b41343-59ee-4d1b-90d4-c7315861933c /opt/pcawg-germline/workflows/sanger-bwa-workflow/sanger-bwa-workflow.cwl /tmp/sanger-bwa-cwl-config.json", 
+#                             shell=True, 
+#                             cwd=None, 
+#                             stderr=STDOUT)
+#    logger.info(my_output)
+#except CalledProcessError as e:
+#    print("Program output is: " + e.output.decode("utf-8") )
+#    print("{} execution failed {}.".format(command_name, e.returncode))
+#    raise
     
     return submission_sample_location
 
