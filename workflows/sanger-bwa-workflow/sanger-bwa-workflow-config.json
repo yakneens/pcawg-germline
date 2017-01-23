@@ -7,7 +7,7 @@
 		"out_met": ".bam.met", 
 		"out_maptime": ".bam.maptime"
 	},
-	"generate_cram": False,
+	"generate_cram": false,
 	"cwl_file_location": "/opt/pcawg-germline/workflows/sanger-bwa-workflow/sanger-bwa-workflow.cwl",
 	"cwl_config_location": "/tmp/sanger-bwa-cwl-config.json",
 	"cwl_flags": " --debug --non-strict --enable-dev "
