@@ -17,7 +17,7 @@ import os.path
 import datetime
 import re
 import json
-import distutils
+import distutils.util
 
 from subprocess import check_output
 
