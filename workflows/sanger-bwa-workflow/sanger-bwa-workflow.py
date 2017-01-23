@@ -21,7 +21,7 @@ import json
 from subprocess import check_output
 
 def get_cwl_config_template():
-    fp = open("config-template.json")
+    fp = open("/opt/airflow/dags/pcawg-germline/sanger-bwa-workflow/config-template.json")
     cwl_config = json.load(fp)
     fp.close()
     return cwl_config
