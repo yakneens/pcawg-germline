@@ -73,7 +73,7 @@ def run_bwa(**kwargs):
     
     cwl_flags = config["cwl_flags"]
     
-    result_path_prefix = config["results_local_path"] + "/" + sample_id
+    result_path_prefix = config["results_base_path"] + "/" + sample_id
     
     cwl_config_location = prepare_cwl_config(get_cwl_config_template(), config, sample)
     
