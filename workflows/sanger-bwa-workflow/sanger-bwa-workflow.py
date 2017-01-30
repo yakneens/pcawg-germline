@@ -51,6 +51,8 @@ def prepare_cwl_config(cwl_config, config, sample):
     
     cwl_config["cram"] = generate_cram
     
+    cwl_config["sample"] = sample_id
+    
     for out_key in output_mapping:
         cwl_config[out_key]["path"] = "{}{}{}{}".format(result_path_prefix, sample_id, "_mapped", output_mapping[out_key])  
     
