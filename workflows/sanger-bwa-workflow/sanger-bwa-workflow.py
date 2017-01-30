@@ -100,8 +100,7 @@ def run_bwa(**kwargs):
 #    print("Program output is: " + e.output.decode("utf-8") )
 #    print("{} execution failed {}.".format(command_name, e.returncode))
 #    raise
-    
-    return submission_sample_location
+
 
 
 
