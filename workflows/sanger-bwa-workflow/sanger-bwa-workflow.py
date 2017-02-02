@@ -119,7 +119,7 @@ default_args = {
 }
 
 dag = DAG("sanger_bwa", default_args=default_args,
-          schedule_interval=None, concurrency=50, max_active_runs=50)
+          schedule_interval=None, concurrency=500, max_active_runs=500)
 
 
 start_analysis_run_task = PythonOperator(
