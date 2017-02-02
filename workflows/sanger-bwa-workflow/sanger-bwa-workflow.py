@@ -82,7 +82,7 @@ def run_bwa(**kwargs):
     
     cwl_file_location = config["cwl_file_location"]
     
-    cwl_command = "{} {} --outdir {} --tmp-outdir-prefix /shared/data/docker_temp/ {} {}".\
+    cwl_command = "{} {} --outdir {} --tmp-outdir-prefix /pan-prostate/docker_temp/ {} {}".\
         format("cwl-runner",
                cwl_flags,
                result_path_prefix,
