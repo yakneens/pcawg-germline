@@ -1,0 +1,6 @@
+{
+	"results_base_path": "/pan-prostate/results/sanger_pcawg_alignments_normal",
+	"results_local_path": "/tmp/sanger_pan_prostate_alignment/",
+	"reference_location": "/shared/data/reference_grch37d5/core_ref_GRCh37d5.tar.gz",
+	"bwa_index_location": "/shared/data/reference_grch37d5/bwa_idx_GRCh37d5.tar.gz"
+}
