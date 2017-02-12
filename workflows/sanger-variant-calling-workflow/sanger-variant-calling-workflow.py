@@ -32,7 +32,7 @@ def prepare_cwl_config(cwl_config, config, sample):
     annot_location = config["annot_location"]
     snv_indel_location = config["snv_indel_location"]
     cnv_sv_location = config["cnv_sv_location"]
-    subc_location = config["subc_location"]
+    subcl_location = config["subcl_location"]
 
     normal_sample_id = sample["normal_sample_id"]
     normal_sample_location = sample["normal_sample_location"]
