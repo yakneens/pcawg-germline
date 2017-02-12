@@ -5,5 +5,5 @@
 	"annot_location": "/pan-prostate/reference/VAGrENT_ref_GRCh37d5_ensembl_75.tar.gz",
 	"snv_indel_location": "/pan-prostate/reference/SNV_INDEL_ref_GRCh37d5.tar.gz",
 	"cnv_sv_location": "/pan-prostate/reference/CNV_SV_ref_GRCh37d5.tar.gz",
-	"subc_location": "/pan-prostate/reference/SUBCL_ref_GRCh37d5.tar.gz"
+	"subcl_location": "/pan-prostate/reference/SUBCL_ref_GRCh37d5.tar.gz"
 }
