@@ -1,0 +1,15 @@
+{
+	"output_mapping": {
+		"out_bam": ".bam", 
+		"out_bai": ".bam.bai", 
+		"out_bas": ".bam.bas", 
+		"out_md5": ".bam.md5", 
+		"out_met": ".bam.met", 
+		"out_maptime": ".bam.maptime"
+	},
+	"generate_cram": false,
+	"cwl_file_location": "/opt/pcawg-germline/workflows/sanger-variant-calling-workflow/sanger-variant-calling-workflow.cwl",
+	"cwl_config_location": "/tmp/sanger-variant-calling-cwl-config.json",
+	"cwl_flags": " --debug --non-strict --enable-dev "
+}
+

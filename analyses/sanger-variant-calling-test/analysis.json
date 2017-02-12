@@ -1,0 +1,9 @@
+{
+	"results_base_path": "/pan-prostate/results/sanger_variant_calling_test/",
+	"results_local_path": "/tmp/sanger_variant_calling/",
+	"reference_location": "/pan-prostate/reference/core_ref_GRCh37d5.tar.gz",
+	"annot_location": "/pan-prostate/reference/VAGrENT_ref_GRCh37d5_ensembl_75.tar.gz",
+	"snv_indel_location": "/pan-prostate/reference/SNV_INDEL_ref_GRCh37d5.tar.gz",
+	"cnv_sv_location": "/pan-prostate/reference/CNV_SV_ref_GRCh37d5.tar.gz",
+	"subc_location": "/pan-prostate/reference/SUBCL_ref_GRCh37d5.tar.gz"
+}
