@@ -61,7 +61,7 @@ def get_available_samples(analysis_id, num_runs):
         
     available_samples = sample_session.query(PCAWGSample.index.label("index"), normal_sample_id, normal_sample_location, tumour_sample_id, tumour_sample_location).\
         join(SampleLocation, PCAWGSample.index == SampleLocation.donor_index).\
-        filter(and_(normal_sample_location != None, tumour_sample_location != None, index.notin_(current_runs), PCAWGSample.dcc_project_code.in_(["PRAD-CA", "PRAD-UK", "PRAD-US", "EOPC-DE"]))).\
+        filter(and_(normal_sample_location != None, tumour_sample_location != None, PCAWGSample.index.notin_(current_runs), PCAWGSample.dcc_project_code.in_(["PRAD-CA", "PRAD-UK", "PRAD-US", "EOPC-DE"]))).\
         limit(num_runs).all()
         
     run_session.close()
