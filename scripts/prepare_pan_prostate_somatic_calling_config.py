@@ -84,13 +84,14 @@ def write_config_to_file(config, config_location):
 
 def generate_config_objects(available_samples, num_runs, config_location):
     for this_run in range(num_runs):
-    
+        normal_sample_id = available_samples[this_run].normal_sample_id.split(",")[0]
+        tumour_sample_id = available_samples[this_run].tumour_sample_id.split(",")[0]
         
         this_config_data = {"sample": {
                                 "donor_index": available_samples[this_run].index,
-                                "normal_sample_id": available_samples[this_run].normal_sample_id.split(",")[0],
+                                "normal_sample_id": normal_sample_id,
                                 "normal_sample_location": "/pan-prostate/results/sanger_pcawg_alignments_normal/" + normal_sample_id + "/" + normal_sample_id + ".bam",
-                                "tumour_sample_id": available_samples[this_run].tumor_sample_id.split(",")[0],
+                                "tumour_sample_id": tumour_sample_id,
                                 "tumour_sample_location": "/pan-prostate/results/sanger_pcawg_alignments/" + tumour_sample_id + "/" + tumour_sample_id + ".bam"
                                 }
                             }
