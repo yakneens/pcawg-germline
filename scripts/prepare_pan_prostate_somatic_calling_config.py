@@ -30,7 +30,7 @@ def parse_args():
     
     return my_args
 
-def get_available_samples(analysis_id, tissue_type, num_runs):
+def get_available_samples(analysis_id, num_runs):
     
     #PCAWG Samples are in their own database
     Base = automap_base()        
@@ -102,10 +102,9 @@ def create_configs_command(args):
 
     analysis_id = args.analysis_id
     num_runs = args.num_runs
-    tissue_type = args.tissue_type
     config_location = args.config_location
     
-    available_samples, num_available_samples = get_available_samples(analysis_id, tissue_type, num_runs)
+    available_samples, num_available_samples = get_available_samples(analysis_id, num_runs)
     
     if num_available_samples < num_runs:
         print "Only found {} available samples to run. Will create {} run configurations.".format(str(num_available_samples), str(num_available_samples))
