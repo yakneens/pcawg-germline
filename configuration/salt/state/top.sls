@@ -37,7 +37,6 @@ base:
     - elastic.logstash
     - elastic.kibana
     - celery
-pcawg:
   'G@roles:germline':
     - biotools.freebayes
     - biotools.htslib
