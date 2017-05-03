@@ -46,7 +46,7 @@ base:
     - elastic.logstash
     - elastic.kibana
     - celery
-  'G@roles:germline':
+  'G@roles:tmp_germline':
     - biotools.freebayes
     - biotools.htslib
     - biotools.samtools

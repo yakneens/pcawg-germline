@@ -1,0 +1,17 @@
+{
+	"gnos": {
+		"ebi": {
+			"url": "https://gtrepo-ebi.annailabs.com"
+		},
+		"osdc_icgc": {
+			"url": "https://gtrepo-osdc-icgc.annailabs.com"
+		},
+		"osdc_tcga": {
+			"url": "https://gtrepo-osdc-tcga.annailabs.com"
+		}
+	},
+	"rsync": {
+		"flags": "-a -v --remove-source-files"
+	}
+}
+
