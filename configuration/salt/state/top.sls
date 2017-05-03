@@ -19,6 +19,7 @@ base:
     - dnsmasq.gnos
     - celery
     - airflow
+    - airflow.patch-airflow-db-conns
     - airflow.load-workflows
     - airflow.worker
     - butler.tracker
@@ -26,6 +27,7 @@ base:
     - docker 
   'G@roles:tracker':
     - airflow
+    - airflow.patch-airflow-db-conns
     - airflow.load-workflows
     - airflow.server
     - jsonmerge
