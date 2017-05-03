@@ -5,6 +5,7 @@ base:
     - collectd
     - elastic.filebeat
     - elastic.packetbeat
+    - ntp
   'G@roles:consul-bootstrap':
     - consul.bootstrap
   'G@roles:consul-server':
@@ -20,14 +21,19 @@ base:
     - airflow
     - airflow.load-workflows
     - airflow.worker
+    - butler
+    - cwltool
+    - docker 
   'G@roles:tracker':
     - airflow
     - airflow.load-workflows
     - airflow.server
     - jsonmerge
+    - butler    
   'G@roles:db-server':
     - postgres
     - run-tracking-db
+    - run-tracking-db.create_tables
     - grafana.createdb
     - airflow.airflow-db
     - sample-tracking-db
