@@ -26,6 +26,7 @@ base:
     - cwltool
     - docker 
   'G@roles:tracker':
+    - celery
     - airflow
     - airflow.patch-airflow-db-conns
     - airflow.load-workflows
