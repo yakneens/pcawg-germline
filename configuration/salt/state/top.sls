@@ -15,7 +15,7 @@ base:
   'G@roles:monitoring-server':
     - influxdb
     - grafana 
-  'G@roles:tmp_worker':
+  'G@roles:worker':
     - dnsmasq.gnos
     - celery
     - airflow
