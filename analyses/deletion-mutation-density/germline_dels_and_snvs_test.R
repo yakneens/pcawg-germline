@@ -26,11 +26,12 @@ missing_samples = which(is.na(colnames(germline_snv_genotypes)))
 #missing_samples = 1836
 germline_snv_genotypes = germline_snv_genotypes[,-missing_samples]
 save(germline_snv_genotypes, file="~/Downloads/pcawg_data/del_density/input_data/germline_snv_genotypes_chr_20.RData")
-
 donor_meta = donor_meta[-missing_samples,]
 deletion_carrier_mask = deletion_carrier_mask[, -missing_samples]
 
 #snv_counts = unlist(lapply(snv_ranges, length))
+load(file="~/Downloads/pcawg_data/del_density/input_data/germline_snv_genotypes_chr_20.RData", verbose=T)
+
 deletion_filter = which(as.character(seqnames(deletion_ranges)) != "20")
 filtered_deletion_carrier_mask = deletion_carrier_mask
 filtered_snv_counts = snv_counts
@@ -110,4 +111,82 @@ post_del_t = t.test(post_del)
 
 max_density = max(binned_densities_germline_snv_carriers_for_plot$snv_density) 
 
-ggplot(binned_densities_germline_snv_carriers_for_plot, aes(x=bin_index, y=snv_density)) + geom_bar(stat="identity") + geom_vline(xintercept=10.5, linetype="dashed") + geom_vline(xintercept=20.5, linetype="dashed") + xlab("Bin") + ylab("SNV Density") + annotate("text", x=5, y=1.1*max_density, label="Left Flank") + annotate("text", x=15, y=1.1*max_density, label="Deletion") + annotate("text", x=25, y=1.1*max_density, label="Right Flank")
+ggplot(binned_densities_germline_snv_carriers_for_plot, aes(x=bin_index, y=snv_density)) + 
+  geom_bar(stat="identity") + 
+  geom_vline(xintercept=10.5, linetype="dashed") + 
+  geom_vline(xintercept=20.5, linetype="dashed") + 
+  xlab("Bin") + 
+  ylab("SNV Density") + 
+  annotate("text", x=5, y=1.1*max_density, label="Left Flank") + 
+  annotate("text", x=15, y=1.1*max_density, label="Deletion") + 
+  annotate("text", x=25, y=1.1*max_density, label="Right Flank")
+
+z = lapply(seq_along(filtered_deletion_ranges), function(x){as.list(table(germline_snv_genotypes[subjectHits(findOverlaps(filtered_deletion_ranges[x],germline_snv_chr_20_ranges))]))})
+z2 = rbindlist(z, fill=T)
+setnames(z2, c("ref", "hom", "nocall", "het"))
+z2[which(is.na(z2), arr.ind = T)] = 0
+
+ggplot(z2, aes(x=het, y=hom)) + 
+  geom_point(size=0.5) + 
+  geom_abline(slope=1, intercept=0) + 
+  coord_fixed(ratio=1, xlim=c(0,3000), ylim=c(0,3000))
+
+
+ggplot(z2, aes(x=het, y=hom)) + 
+  geom_point(size=0.5) + 
+  geom_abline(slope=1, intercept=0) + 
+  coord_fixed(ratio=1, xlim=c(0,50), ylim=c(0,50))
+
+
+
+z2[order(-het)][1:20]
+summary(z2$het)
+summary(z2$hom)
+boxplot(z2[,c("hom","het")])
+boxplot(log(z2[,c("hom","het")]))
+boxplot(z2[,c("hom","het")])
+boxplot(z2[c("hom","het")])
+z2
+boxplot(log(z2))
+boxplot(z2)
+boxplot(z2[,hom/het])
+hist(z2[,hom/het])
+z2[]
+z2[,hom/het]
+hist(log(z2[,hom/het][1:482]))
+hist(z2[,hom/het][1:482])
+hist(z2[,hom/het][1:482])
+hist(z2[,hom/het][1:482])
+z2[,hom/het]
+z2 = z2[order(-het)]
+z2[order(-het)][1:100]
+z2[order(-het)]
+z2
+hist(log(z2[,het]))
+hist(log(z2[,hom]))
+hist(z2[,hom])
+hist(z2[,hom])
+z2
+hist(log(z2[hom>0,het/hom]))
+hist(z2[hom>0,het/hom])
+z2[hom>0,het/hom]
+z2[,het/hom]
+z2[,hom/het]
+summary(z2[,hom/het])
+hist(log(z2[,hom/het]))
+hist(z2[,hom/het])
+z2[,hom/het]
+hist(log(na.omit(z2[,hom/het])))
+z2
+which(is.na(z2))
+z2[which(is.na(z2), arr.ind = T)]
+
+z2[which(is.na(z2))] = 0
+z2[which(is.na(z2))]
+which(is.na(z2))
+which(z2 == "N/A")
+z2[which(z2 == "N/A")]
+hist(log(na.omit(z2[,hom/het])))
+hist(na.omit(z2[,hom/het]))
+na.omit(z2[,hom/het])
+z2[,hom/het]
