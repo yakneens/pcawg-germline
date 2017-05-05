@@ -2,6 +2,7 @@ base:
   '*':
     - consul
     - dnsmasq
+    - dnsmasq.ebi-proxy
     - collectd
     - elastic.filebeat
     - elastic.packetbeat
@@ -16,7 +17,7 @@ base:
     - influxdb
     - grafana 
   'G@roles:worker':
-    - dnsmasq.gnos
+    - dnsmasq.germline-share
     - celery
     - airflow
     - airflow.load-workflows
@@ -25,6 +26,7 @@ base:
     - cwltool
     - docker 
   'G@roles:tracker':
+    - dnsmasq.germline-share
     - run-tracking-db.set_db_url
     - celery
     - airflow
