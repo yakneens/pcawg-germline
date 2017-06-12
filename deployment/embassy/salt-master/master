@@ -494,13 +494,15 @@ gitfs_provider: gitpython
 # environments.
 # Note:  file:// repos will be treated as a remote, so refs you want used must
 # exist in that repo as *local* refs.
+
 gitfs_remotes:
+  - git://github.com/llevar/pcawg-germline.git:
+    - root: configuration/salt/state
+    - base: master
   - git://github.com/llevar/butler.git:
     - root: configuration/salt/state
     - base: master
-#  - git://github.com/llevar/pcawg-germline.git:
-#    - root: configuration/salt/state
-#    - base: pcawg
+    
 #
 # The gitfs_ssl_verify option specifies whether to ignore ssl certificate
 # errors when contacting the gitfs backend. You might want to set this to
@@ -522,10 +524,14 @@ gitfs_remotes:
 # Pillar is laid out in the same fashion as the file server, with environments,
 # a top file and sls files. However, pillar data does not need to be in the
 # highstate format, and is generally just key/value pairs.
+#
 pillar_roots:
   base:
     - /srv/pillar
-#
+
+top_file_merging_strategy: same
+default_top: base
+
 ext_pillar:
 #  - hiera: /etc/hiera.yaml
 #  - cmd_yaml: cat /etc/salt/yaml
@@ -533,9 +539,10 @@ ext_pillar:
     - master git://github.com/llevar/butler.git:
       - root: configuration/salt/pillar
       - env: base
-#    - master git://github.com/llevar/pcawg_germline.git:
-#      - root: configuration/salt/pillar
-#      - env: pcawg
+    - master git://github.com/llevar/pcawg-germline.git:
+      - root: configuration/salt/pillar
+      - env: base
+
 
 # The ext_pillar_first option allows for external pillar sources to populate
 # before file system pillar. This allows for targeting file system pillar from

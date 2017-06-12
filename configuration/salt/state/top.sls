@@ -1,18 +1,21 @@
 base:
   '*':
-    - consul
     - dnsmasq
     - dnsmasq.ebi-proxy
+    - consul
     - collectd
     - elastic.filebeat
     - elastic.packetbeat
     - ntp
   'G@roles:consul-bootstrap':
     - consul.bootstrap
+    - consul.join-all
   'G@roles:consul-server':
     - consul.server
+    - consul.join-all
   'G@roles:consul-client':
     - consul.client
+    - consul.join-all
   'G@roles:monitoring-server':
     - influxdb
     - grafana 
@@ -34,7 +37,9 @@ base:
     - airflow.load-workflows
     - airflow.server
     - jsonmerge
-    - butler.tracker    
+    - butler.tracker
+    - butler.deploy.example-workflows
+      
   'G@roles:db-server':
     - postgres
     - run-tracking-db
