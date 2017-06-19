@@ -38,7 +38,6 @@ base:
     - airflow.server
     - jsonmerge
     - butler.tracker
-    - butler.deploy.example-workflows
       
   'G@roles:db-server':
     - postgres
