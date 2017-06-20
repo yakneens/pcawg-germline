@@ -88,12 +88,11 @@ def write_config_to_file(config, config_location):
 def generate_config_objects(available_samples, num_runs, config_location):
     for this_run in range(num_runs):
     
-        sample_id = available_samples[this_run].sample_id.split(",")[0]
         
         this_config_data = {"sample": {
                                 "donor_index": available_samples[this_run].index,
                                 "sample_id": available_samples[this_run].sample_id.split(",")[0],
-                                "sample_location": "/pan-prostate/results/sanger_pcawg_alignments_normal/" + sample_id + "/" + sample_id + ".bam"
+                                "sample_location": available_samples[this_run].sample_location
                                 }
                             }
         
