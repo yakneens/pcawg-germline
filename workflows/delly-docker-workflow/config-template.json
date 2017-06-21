@@ -1,0 +1,38 @@
+{
+  "exclude-reg":
+  {
+    "path": "https://bitbucket.org/weischenfeldt/pcawg_delly_workflow/raw/bfb1820f0c8458f1539e42431aea240d1fb31fe7/delly_docker/extra_data/human.hg19.excl.tsv",
+    "class": "File"
+  },
+  "reference-gc": {
+    "path": "https://dcc.icgc.org/api/v1/download?fn=/PCAWG/reference_data/pcawg-delly/hs37d5_1000GP.gc",
+    "class": "File"
+  },
+  "gc_wig": {
+    "path": "/tmp/genome.gc.wig.gz",
+    "class": "File"
+  },
+  "run-id": "run_id",
+  "ncpu": 32,
+  "tumor-bam": {
+    "path": "https://dcc.icgc.org/api/v1/download?fn=/PCAWG/reference_data/data_for_testing/HCC1143_ds/HCC1143.bam",
+    "class": "File"
+  },
+  "normal-bam": {
+    "path": "https://dcc.icgc.org/api/v1/download?fn=/PCAWG/reference_data/data_for_testing/HCC1143_ds/HCC1143_BL.bam",
+    "class": "File"
+  },
+  "reference-gz": {
+    "path": "https://dcc.icgc.org/api/v1/download?fn=/PCAWG/reference_data/pcawg-bwa-mem/genome.fa.gz",
+    "class": "File"
+  },
+  "sv-collection": {
+    "path": "Download from synapse get syn9934121 or https://bricweb.sund.ku.dk/bric-data/joachim/pcawg/svCallCollectionsPCAWG.tar.gz",
+    "class": "File"
+  },
+  "archives": "/tmp/archives",
+  "sequenzaout": "/tmp/sequenza_out.tar.gz",
+  "bndout": "/tmp/bndout",
+  "highconfout": "/tmp/highconfout",
+  "dellyout": "/tmp/dellyout.tar.gz"
+}

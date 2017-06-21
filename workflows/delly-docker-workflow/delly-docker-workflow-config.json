@@ -1,0 +1,10 @@
+{
+	"reference_location": "",
+	"exclude_regions_location": "/pan-prostate/reference/human.hg19.excl.tsv",
+	"reference_gc_location": "/pan-prostate/reference/hs37d5_1000GP.gc",
+	"gc_wig_location": "/pan-prostate/reference/genome.gc.wig.gz",
+	"sv_pon_location": "/pan-prostate/reference/svCallCollectionsPCAWG.tar.gz",
+	"cwl_file_location": "/opt/pcawg-germline/workflows/delly-docker-workflow/delly-docker-workflow.cwl",
+	"cwl_config_location": "/tmp/delly-docker-cwl-config.json",
+	"cwl_flags": " --debug --non-strict --enable-dev "
+}

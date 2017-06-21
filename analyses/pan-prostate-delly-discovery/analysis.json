@@ -1,0 +1,5 @@
+{
+	"results_base_path": "/pan-prostate/results/delly-discovery/",
+	"results_local_path": "/tmp/discovery/",
+	"num_cores": 8
+}

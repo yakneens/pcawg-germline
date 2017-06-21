@@ -22,20 +22,24 @@ import distutils.util
 from subprocess import check_output
 
 def get_cwl_config_template():
-    fp = open("/opt/airflow/dags/pcawg-germline/sanger-bwa-workflow/config-template.json")
+    fp = open("/opt/airflow/dags/pcawg-germline/delly-docker-workflow/config-template.json")
     cwl_config = json.load(fp)
     fp.close()
     return cwl_config
 
 def prepare_cwl_config(cwl_config, config, sample):
     reference_location = config["reference_location"]
-    bwa_index_location = config["bwa_index_location"]
-    generate_cram = config["generate_cram"]
-    output_mapping = config["output_mapping"]
-    #output_mapping = {"out_bam":".bam", "out_bai":".bam.bai", "out_bas":".bam.bas", "out_md5":".bam.md5", "out_met":".bam.met", "out_maptime":".bam.maptime"}
+    exclude_regions_location = config["exclude_regions_location"]
+    reference_gc_location = config["reference_gc_location"]
+    gc_wig_location = config["gc_wig_location"]
+    sv_pon_location = config["sv_pon_location"]
+    num_cores = config["num_cores"]
     
-    sample_id = sample["sample_id"]
-    sample_location = sample["sample_location"]
+    normal_sample_id = sample["normal_sample_id"]
+    normal_sample_location = sample["normal_sample_location"]
+    
+    tumour_sample_id = sample["tumour_sample_id"]
+    tumour_sample_location = sample["tumour_sample_location"]
     
     result_path_prefix = "/tmp/"
     
@@ -44,20 +48,16 @@ def prepare_cwl_config(cwl_config, config, sample):
             "Results directory {} not present, creating.".format(result_path_prefix))
         os.makedirs(result_path_prefix)
     
-    cwl_config["reference"]["path"] = reference_location
-    cwl_config["bwa_idx"]["path"] = bwa_index_location
+    cwl_config["reference-gz"]["path"] = reference_location
+    cwl_config["exclude-reg"]["path"] = exclude_regions_location
+    cwl_config["reference-gc"]["path"] = reference_gc_location
+    cwl_config["gc_wig"]["path"] = gc_wig_location
+    cwl_config["sv-collection"]["path"] = sv_pon_location
+    cwl_config["normal-bam"]["path"] = normal_sample_location
+    cwl_config["tumor-bam"]["path"] = tumour_sample_location
     
-    cwl_config["bams_in"][0]["path"] = sample_location
-    
-    cwl_config["cram"] = generate_cram
-    
-    cwl_config["sample"] = sample_id
-    
-    for out_key in output_mapping:
-        cwl_config[out_key]["path"] = "{}{}{}{}".format(result_path_prefix, sample_id, "_mapped", output_mapping[out_key])  
-    
-    
-    cwl_config_location = config["cwl_config_location"]
+    cwl_config["ncpu"] = num_cores
+
     
     fp = open(cwl_config_location,"w")
     json.dump(cwl_config, fp)
@@ -66,16 +66,19 @@ def prepare_cwl_config(cwl_config, config, sample):
     return cwl_config_location
     
 
-def run_bwa(**kwargs):
+def run_delly(**kwargs):
     config = get_config(kwargs)
     sample = get_sample(kwargs)
     
-    sample_id = sample["sample_id"]
-    sample_location = sample["sample_location"]
+    normal_sample_id = sample["normal_sample_id"]
+    normal_sample_location = sample["normal_sample_location"]
+    
+    tumour_sample_id = sample["tumour_sample_id"]
+    tumour_sample_location = sample["tumour_sample_location"]
     
     cwl_flags = config["cwl_flags"]
     
-    result_path_prefix = config["results_base_path"] + "/" + sample_id
+    result_path_prefix = config["results_base_path"] + "/" + normal_sample_id
     
     cwl_config_location = prepare_cwl_config(get_cwl_config_template(), config, sample)
     
@@ -103,7 +106,7 @@ default_args = {
     'retry_delay': timedelta(minutes=5),
 }
 
-dag = DAG("sanger_bwa", default_args=default_args,
+dag = DAG("docker_delly", default_args=default_args,
           schedule_interval=None, concurrency=500, max_active_runs=500)
 
 
@@ -113,13 +116,13 @@ start_analysis_run_task = PythonOperator(
     provide_context=True,
     dag=dag)
 
-run_bwa_task = PythonOperator(
-    task_id="run_bwa",
-    python_callable=run_bwa,
+run_delly_task = PythonOperator(
+    task_id="run_delly",
+    python_callable=run_delly,
     provide_context=True,
     dag=dag)
 
-run_bwa_task.set_upstream(start_analysis_run_task)
+run_delly_task.set_upstream(start_analysis_run_task)
 
 complete_analysis_run_task = PythonOperator(
     task_id="complete_analysis_run",
