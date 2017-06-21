@@ -58,7 +58,7 @@ def prepare_cwl_config(cwl_config, config, sample):
     
     cwl_config["ncpu"] = num_cores
 
-    cwl_config["run-id"] = uuid.uuid4()
+    cwl_config["run-id"] = uuid.uuid4()()
     
     fp = open(cwl_config_location,"w")
     json.dump(cwl_config, fp)
@@ -131,4 +131,4 @@ complete_analysis_run_task = PythonOperator(
     provide_context=True,
     dag=dag)
 
-complete_analysis_run_task.set_upstream(run_bwa_task)
+complete_analysis_run_task.set_upstream(run_delly_task)
