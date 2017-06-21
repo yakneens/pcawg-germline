@@ -58,7 +58,7 @@ def prepare_cwl_config(cwl_config, config, sample):
     
     cwl_config["ncpu"] = num_cores
 
-    cwl_config["run-id"] = uuid.uuid4()
+    cwl_config["run-id"] = str(uuid.uuid4())
     
     cwl_config_location = config["cwl_config_location"]
     
