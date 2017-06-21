@@ -58,6 +58,7 @@ def prepare_cwl_config(cwl_config, config, sample):
     
     cwl_config["ncpu"] = num_cores
 
+    cwl_config["run-id"] = uuid.uuid4()
     
     fp = open(cwl_config_location,"w")
     json.dump(cwl_config, fp)
