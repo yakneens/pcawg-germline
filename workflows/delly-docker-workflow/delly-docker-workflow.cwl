@@ -29,7 +29,7 @@ dct:contributor:
 
 requirements:
   - class: DockerRequirement
-    dockerPull: registry.hub.docker.com/weischenfeldt/finsen_delly_workflow:2.0.0_ppcg_test
+    dockerPull: weischenfeldt/bric-embl_delly_workflow:2.0.0_ppcg_test
 
 hints:
   - class: ResourceRequirement
