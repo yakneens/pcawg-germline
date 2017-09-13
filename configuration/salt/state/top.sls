@@ -17,6 +17,8 @@ base:
   'G@roles:consul-client':
     - consul.client
     - consul.join-all
+  'G@roles:consul-ui':
+    - consul.ui
   'G@roles:monitoring-server':
     - influxdb
     - grafana 
@@ -39,7 +41,6 @@ base:
     - airflow.server
     - jsonmerge
     - butler.tracker
-      
   'G@roles:db-server':
     - postgres
     - run-tracking-db
@@ -59,4 +60,7 @@ base:
     - biotools.delly
   'G@roles:job-queue':
     - rabbitmq
+  'G@roles:butler-web':
+    - nginx
+    - butler.web  
 
